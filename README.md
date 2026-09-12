@@ -4,6 +4,7 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 
 ## Implemented Data Structures
 
+* `algorithms/red_black_tree.py`: Self-balancing Red-Black Binary Search Tree enforcing black-height balance invariants.
 * `algorithms/trie.py`: Prefix Tree (Trie) for $O(L)$ string retrieval and autocomplete.
 * `algorithms/avl_tree.py`: Self-balancing AVL Binary Search Tree with rotation logic.
 * `algorithms/lru_cache.py`: $O(1)$ Doubly-linked list + Hash Map LRU Cache implementation.
