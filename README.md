@@ -1,8 +1,18 @@
 # Code-Blooded
 
-A repository for production-grade Data Structures and Algorithmic Problem Solving in Python.
+Production-grade Data Structures and Algorithmic Problem Solving in Python.
 
-## Modules
+## Implemented Data Structures
 
-- `algorithms/lru_cache.py`: Doubly-linked list + Hash Map LRU Cache implementation.
-- `algorithms/segment_tree.py`: Range Minimum & Range Sum Query Segment Tree.
+* `algorithms/trie.py`: Prefix Tree (Trie) for $O(L)$ string retrieval and autocomplete.
+* `algorithms/avl_tree.py`: Self-balancing AVL Binary Search Tree with rotation logic.
+* `algorithms/lru_cache.py`: $O(1)$ Doubly-linked list + Hash Map LRU Cache implementation.
+* `algorithms/segment_tree.py`: $O(\log N)$ Range Minimum & Range Sum Query Segment Tree.
+
+## Running Tests
+
+Run the PyTest suite across all data structures:
+
+```bash
+pytest
+```
