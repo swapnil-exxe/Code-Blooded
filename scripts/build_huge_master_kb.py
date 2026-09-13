@@ -1,4 +1,12 @@
-# MPLADS AI Command Center — Master Project Technical Knowledge Base & Complete Viva Reference
+import os
+from pathlib import Path
+
+root_dir = Path("/Users/swapnil/Documents/PS102")
+docs_dir = root_dir / "docs"
+master_file = root_dir / "PROJECT_COMPLETE_TECHNICAL_KNOWLEDGE_BASE.md"
+docs_master_file = docs_dir / "PROJECT_COMPLETE_TECHNICAL_KNOWLEDGE_BASE.md"
+
+full_text = r"""# MPLADS AI Command Center — Master Project Technical Knowledge Base & Complete Viva Reference
 
 > **System**: AI-Powered MPLADS Analytics & Governance Platform  
 > **Repository**: [`https://github.com/swapnil-exxe/MPLADS-AI-Command-Center-AI-Powered-Government-Analytics-Platform.git`](https://github.com/swapnil-exxe/MPLADS-AI-Command-Center-AI-Powered-Government-Analytics-Platform.git)  
@@ -617,3 +625,9 @@ erDiagram
   4. Delay SLA: Rule Engine enforcing 75-day sanction & 365-day completion SLAs against `2026-09-05`
 - **Security**: OAuth2 JWT (`HS256`), Bcrypt 12 rounds, `DUMMY_BCRYPT_HASH` timing attack defense, 4 RBAC Tiers (`MINISTRY`, `STATE_OFFICER`, `DISTRICT_OFFICER`, `MP`), Composite District Scoping `(state, district)`.
 - **Validation**: 117/117 Automated Tests Passing (100% Pass Rate). 0 Critical Vulnerabilities.
+"""
+
+master_file.write_text(full_text, encoding="utf-8")
+docs_master_file.write_text(full_text, encoding="utf-8")
+
+print(f"Master file updated: {master_file} ({master_file.stat().st_size} bytes)")

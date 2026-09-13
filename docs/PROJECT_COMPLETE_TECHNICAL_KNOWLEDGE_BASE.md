@@ -1,13 +1,13 @@
-# MPLADS AI Command Center — Master Project Technical Knowledge Base & Viva Reference
+# MPLADS AI Command Center — Master Project Technical Knowledge Base & Complete Viva Reference
 
 > **System**: AI-Powered MPLADS Analytics & Governance Platform  
-> **Problem Statement**: MPLADS Governance & Analytics Platform  
+> **Repository**: [`https://github.com/swapnil-exxe/MPLADS-AI-Command-Center-AI-Powered-Government-Analytics-Platform.git`](https://github.com/swapnil-exxe/MPLADS-AI-Command-Center-AI-Powered-Government-Analytics-Platform.git)  
 > **Dataset Scope**: 190,942 Master Works | 109,311 Expenditure Vouchers | ₹10,211.49 Cr Sanctioned Outlay | 773 Districts | 36 States  
 > **Validation**: 117/117 Automated Tests Passing (100% Pass Rate) | 0 Critical Vulnerabilities  
 
 ---
 
-# 01. Problem Statement & Solution Overview
+# Module 01: Problem Statement & Solution Overview
 
 ## Executive Overview & Real-World Context
 
@@ -80,11 +80,9 @@ The **MPLADS AI Command Center** is an integrated governance analytics platform 
 | **Statutory Delay Tracker** | Measures SLA compliance. | Enforces legal timelines. | Rule Engine (Para 3.12). | Recommendation, sanction, completion dates. | SLA difference vs 75d & 365d limits against `2026-09-05`. | Delay score, primary delay type, overdue days. | MPs & State Officers. |
 | **Subho AI Chatbot** | Conversational query interface. | Instant natural-language insights. | Groq LLM API + Context injection. | User prompt + scoped DB metrics. | Prompt injection filter + Role system prompt + Groq LLM fallback chain. | Natural language response with suggestions. | All Stakeholder Roles. |
 
-
-
 ---
 
-# 02. Complete System Architecture
+# Module 02: Complete System Architecture
 
 ## Complete Layered Architecture
 
@@ -133,11 +131,9 @@ The MPLADS AI Command Center is designed as a decoupled, multi-tiered enterprise
 ### 5. Presentation & User Experience Tier (`frontend/`)
 - **React 18 SPA**: Built with Vite and TypeScript, featuring dark command-center UI, responsive navigation, dynamic Recharts visualizations, interactive maps, and Subho AI Chatbot widget.
 
-
-
 ---
 
-# 03. Data Pipeline & Dataset Lineage
+# Module 03: Data Pipeline & Dataset Lineage
 
 ## Data Lineage & Lifecycle
 
@@ -185,11 +181,9 @@ React 18 SPA Command Center (`frontend/`)
 - **Total Disbursed Capital**: **₹10,166.10 Crore**
 - **Overall Fund Utilization Rate**: **99.56%**
 
-
-
 ---
 
-# 04. Live Scraper Engine Deep Dive
+# Module 04: Live Scraper Engine Deep Dive
 
 ## Live Scraper Engine Architecture (`scraper/`)
 
@@ -222,11 +216,9 @@ Fetch Web Response -> Compute SHA-256 Hash -> Compare with source_snapshots DB T
          Skip Database Write              Log IngestionChange Diff & Update DB
 ```
 
-
-
 ---
 
-# 05. Database Architecture & ER Deep Dive
+# Module 05: Database Architecture & ER Deep Dive
 
 ## Dual-Database & Analytical Parquet Architecture
 
@@ -257,13 +249,9 @@ The platform employs a hybrid database strategy tailored for distinct operationa
 - `work_expenditures`: 109,311 payment vouchers linked to works via foreign key.
 - `users`: Stakeholder accounts and jurisdictional scope definitions.
 
-
-
 ---
 
-# 06. Analytical & Machine Learning Core Models
-
-## The 4 Independent Analytical Core Models
+# Module 06: Analytical & Machine Learning Core Models
 
 The platform strictly avoids artificial risk score averaging. Each model evaluates a distinct compliance dimension:
 
@@ -304,11 +292,9 @@ The platform strictly avoids artificial risk score averaging. Each model evaluat
 - **Track 2**: Sanction to Completion SLA (365-Day limit).
 - **Track 3**: Open Work Aging evaluated against reference date `2026-09-05`.
 
-
-
 ---
 
-# 07. Feature Engineering Registry
+# Module 07: Feature Engineering Registry
 
 ## Feature Engineering Pipeline (`feature_engineering/`)
 
@@ -323,11 +309,9 @@ The feature engineering registry converts raw portal records into clean analytic
    Measures voucher disbursement concentration (1.0 = lump-sum single release, <0.2 = gradual phased tranches).
 4. **Temporal Lag Vectors**: Elapsed days between recommendation, sanction, first voucher, last voucher, and completion.
 
-
-
 ---
 
-# 08. Statutory SLA Rule Engine
+# Module 08: Statutory SLA Rule Engine
 
 ## Statutory Delay SLA Rule Engine (`rule_engines/delay/`)
 
@@ -350,11 +334,9 @@ Statutory compliance in government schemes is a legal mandate, requiring a deter
 - **Open Work Aging**:
   - Evaluates active elapsed days from sanction date to fixed reference date `2026-09-05`.
 
-
-
 ---
 
-# 09. FastAPI Backend Application Gateway
+# Module 09: FastAPI Backend Application Gateway
 
 ## FastAPI Application Gateway Architecture (`api/`)
 
@@ -374,19 +356,15 @@ The backend gateway acts as the secure intermediary between governance clients a
 - `/api/v1/analytics/*`: Model-specific detections (cost anomalies, duplicate pairs, fund anomalies, delays, district/MP summaries).
 - `/api/v1/chat/*`: Subho AI chatbot query endpoints.
 
-
-
 ---
 
-# 10. Authentication, RBAC & Security Architecture
+# Module 10: Authentication, RBAC & Security Architecture
 
-## Authentication, RBAC & Security Architecture
-
-### Cryptographic Security Stack
+## Cryptographic Security Stack
 - **JWT Standard**: HMAC-SHA256 (`HS256`) signed tokens with 60-minute expiration.
 - **Password Hashing**: Direct `bcrypt` with 12 rounds cost factor.
 
-### Timing Attack Defense
+## Timing Attack Defense
 To prevent username enumeration via response timing, `api/auth/security.py` executes a pre-computed 12-round dummy bcrypt hash check (`DUMMY_BCRYPT_HASH`) when an invalid email is submitted. This ensures uniform ~90ms response times for all login attempts.
 
 ---
@@ -407,11 +385,9 @@ Jurisdictional access control is enforced at the database query level via **pred
 - **List Endpoints**: Scoped queries return empty sets (`items: []`) for out-of-jurisdiction filters.
 - **Detail Endpoints (`/works/{id}`)**: Returns `404 Not Found` if the work ID does not exist, and `403 Forbidden` if the work ID exists but falls outside the caller's jurisdiction.
 
-
-
 ---
 
-# 11. Frontend Command-Center UI/UX
+# Module 11: Frontend Command-Center UI/UX
 
 ## React 18 Single-Page Application (`frontend/`)
 
@@ -427,11 +403,9 @@ Built with React 18, Vite, TypeScript, Tailwind CSS, Recharts, and Lucide Icons.
 6. `CostAnomalies.tsx`, `DuplicateWorks.tsx`, `FundAnomalies.tsx`, `StatutoryDelays.tsx`: Dedicated module risk dashboards.
 7. `MPSummary.tsx`, `DistrictSummary.tsx`: Jurisdictional portfolio pages for MPs and District Magistrates.
 
-
-
 ---
 
-# 12. Subho AI Governance Chatbot
+# Module 12: Subho AI Governance Chatbot
 
 ## Subho AI Governance Chatbot (`api/routers/chat.py`)
 
@@ -443,11 +417,9 @@ Subho AI is an interactive conversational assistant for platform users:
 - **Output Redaction (`sanitize_chat_output`)**: Regex filter redacting API keys, database connection strings, and JWT secrets before returning responses.
 - **Context Injection**: Server-side injection of authorized jurisdictional metrics into LLM system prompts based on user role (`PUBLIC`, `MP`, `PARLIAMENT`, `ORGANIZATION`, `AGENCY`).
 
-
-
 ---
 
-# 13. Comprehensive Automated Test Suite & QA
+# Module 13: Comprehensive Automated Test Suite & QA
 
 ## Automated Test Suite Architecture (`tests/`)
 
@@ -468,11 +440,9 @@ The platform contains a test suite of **117 automated tests** across 15 test fil
 - `test_subho_chatbot.py` (3 tests): Chatbot injection defenses and fallback responses.
 - `test_trend_api.py` & `test_trend_rollups.py` (15 tests): Quarterly trend analytics.
 
-
-
 ---
 
-# 14. Performance Optimization & Deployment Guide
+# Module 14: Performance Optimization & Deployment Guide
 
 ## Performance Optimization & Deployment Architecture
 
@@ -485,11 +455,9 @@ The platform contains a test suite of **117 automated tests** across 15 test fil
 - **Production Backend**: FastAPI / Uvicorn hosted on cloud VM (e.g. AWS EC2, Render) connected to Supabase PostgreSQL over SSL.
 - **Environment Isolation**: `.env` file isolated on server; `.env.example` committed to repo.
 
-
-
 ---
 
-# 15. Complete Repository File Map
+# Module 15: Complete Repository File Map
 
 ## Complete Workspace Directory & File Map
 
@@ -540,11 +508,9 @@ PS102/
     └── knowledge_base/       # 20 Modular Technical Knowledge Base Documents
 ```
 
-
-
 ---
 
-# 16. Master Mermaid Architecture Diagrams
+# Module 16: Master Mermaid Architecture Diagrams
 
 ## System Architecture & Data Flow Mermaid Diagrams
 
@@ -576,11 +542,9 @@ erDiagram
     users ||--o{ works : "scopes jurisdiction"
 ```
 
-
-
 ---
 
-# 17. Viva Questions & Expert Answers
+# Module 17: Viva Questions & Expert Answers
 
 ## Technical Viva Questions & Detailed Answers
 
@@ -607,11 +571,9 @@ erDiagram
 - **Short Answer**: Because district names in India are not unique across states.
 - **Detailed Answer**: Exactly 75 district names exist in multiple states (e.g. Bilaspur in Chhattisgarh and Himachal Pradesh). Scoping by district name alone would leak data across state boundaries. We enforce composite tuple scoping: `(assigned_state, assigned_district)`.
 
-
-
 ---
 
-# 18. Technology Selection Justifications
+# Module 18: Technology Selection Justifications
 
 ## Technology Selection Justification Matrix
 
@@ -624,11 +586,9 @@ erDiagram
 | **Rule Engine (Delay)** | Machine Learning | Statutory SLAs (75d / 365d) are codified legal rules requiring 100% deterministic evaluation. | ML adds unnecessary probability/uncertainty to codified legal timelines. |
 | **Bcrypt (12 rounds)** | Plain SHA-256 | Slow password hashing resistant to GPU brute-force attacks. | SHA-256 is too fast, enabling fast offline dictionary attacks. |
 
-
-
 ---
 
-# 19. Hackathon & Evaluator Q&A
+# Module 19: Hackathon & Evaluator Q&A
 
 ## Evaluator & Hackathon Judge Q&A
 
@@ -641,27 +601,19 @@ erDiagram
 ### Q3: How scalable is the architecture?
 > *"The backend is stateless and horizontally scalable via FastAPI/Uvicorn. PostgreSQL queries are optimized with composite B-Tree indexes. Dense embeddings are pre-cached, and candidate blocking windows reduce duplicate comparisons by 99.95%."*
 
-
-
 ---
 
-# 20. Final One-Page Reference Cheat Sheet
+# Module 20: Final One-Page Reference Cheat Sheet
 
 ## One-Page Project Master Reference
 
 - **Project Name**: MPLADS AI Command Center (Governance & Analytics Platform)
-- **Platform Requirement**: MPLADS Governance & Analytics Platform (MoSPI)
 - **Core Scope**: 190,942 Master Works | 109,311 Expenditure Vouchers | ₹10,211.49 Cr Sanctioned | 773 Districts | 36 States
 - **Stack**: React 18 SPA + Vite + Tailwind | FastAPI + Async Uvicorn | Supabase PostgreSQL 17.6 | PyArrow & Apache Parquet
 - **4 Models**:
   1. Cost Anomaly: Hierarchical Peer Isolation Forest (`n_estimators=100`, Sigmoid calibrated)
   2. Duplicate Work: `all-MiniLM-L6-v2` dense embeddings + Structural proximity + 90d Candidate Blocking
   3. Fund Anomaly: Active spend Isolation Forest + HHI concentration + Status Mismatch rules
-  4. Delay SLA: Rule Engine enforcing 75-day sanction (Para 3.12) & 365-day completion SLAs against `2026-09-05`
+  4. Delay SLA: Rule Engine enforcing 75-day sanction & 365-day completion SLAs against `2026-09-05`
 - **Security**: OAuth2 JWT (`HS256`), Bcrypt 12 rounds, `DUMMY_BCRYPT_HASH` timing attack defense, 4 RBAC Tiers (`MINISTRY`, `STATE_OFFICER`, `DISTRICT_OFFICER`, `MP`), Composite District Scoping `(state, district)`.
 - **Validation**: 117/117 Automated Tests Passing (100% Pass Rate). 0 Critical Vulnerabilities.
-
-
-
----
-
