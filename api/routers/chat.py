@@ -198,7 +198,7 @@ async def call_groq_api(system_prompt: str, user_message: str, history: List[Cha
     candidate_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]
 
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
+        async with httpx.AsyncClient(timeout=3.0) as client:
             for model in candidate_models:
                 payload = {
                     "model": model,
@@ -212,6 +212,9 @@ async def call_groq_api(system_prompt: str, user_message: str, history: List[Cha
                     content = data["choices"][0]["message"]["content"]
                     if content and content.strip():
                         return content
+                elif resp.status_code in [401, 403]:
+                    logger.warning(f"Groq API key unauthorized (status {resp.status_code}). Aborting Groq call.")
+                    return None
                 else:
                     logger.debug(f"Groq API model {model} returned status {resp.status_code}: {resp.text}")
             logger.warning("All candidate Groq models failed or returned empty response.")
@@ -287,7 +290,7 @@ def build_fallback_response(role: str, user_message: str, context: Dict[str, Any
 @router.post("/public-chat", response_model=ChatResponse)
 @router.post("/subho-ai/public-chat", response_model=ChatResponse)
 @router.post("/subho-ai/query", response_model=ChatResponse)
-async def public_chat(request: Request, body: ChatRequest, db: Session = Depends(get_db)):
+async def public_chat(request: Request, body: ChatRequest):
     """Unauthenticated public landing page chatbot endpoint."""
     user_msg = body.message.strip()
 
