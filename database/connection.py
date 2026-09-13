@@ -14,6 +14,11 @@ def _sanitize_db_url(raw_url: str) -> str:
     if not raw_url or "sqlite" in raw_url:
         return raw_url
     raw_url = raw_url.replace("postgres://", "postgresql://").replace("?pgbouncer=true", "")
+    if "db.fcpwrmzviqrhsdgelwmk.supabase.co" in raw_url:
+        raw_url = raw_url.replace("db.fcpwrmzviqrhsdgelwmk.supabase.co:5432", "aws-0-ap-south-1.pooler.supabase.com:6543")
+        raw_url = raw_url.replace("db.fcpwrmzviqrhsdgelwmk.supabase.co", "aws-0-ap-south-1.pooler.supabase.com:6543")
+        if "postgres:" in raw_url and "postgres.fcpwrmzviqrhsdgelwmk:" not in raw_url:
+            raw_url = raw_url.replace("postgres:", "postgres.fcpwrmzviqrhsdgelwmk:", 1)
     if raw_url.count("@") > 1:
         try:
             prefix, rest = raw_url.rsplit("@", 1)
@@ -62,8 +67,8 @@ def get_db_url() -> str:
         raw_pg = f"postgresql://{user}:{password}@{host}:{port}/{db}"
         return _sanitize_db_url(raw_pg)
 
-    # 3. Default to Live Supabase PostgreSQL Connection
-    supabase_url = "postgresql://postgres:Mplads%402026!@db.fcpwrmzviqrhsdgelwmk.supabase.co:5432/postgres"
+    # 3. Default to Live Supabase PostgreSQL Connection via IPv4 Pooler
+    supabase_url = "postgresql://postgres.fcpwrmzviqrhsdgelwmk:Mplads%402026!@aws-0-ap-south-1.pooler.supabase.com:6543/postgres"
     return supabase_url
 
 def get_engine(db_url: str = None, pool_size: int = 10, max_overflow: int = 20):
