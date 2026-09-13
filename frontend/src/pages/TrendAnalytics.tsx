@@ -28,31 +28,40 @@ export const TrendAnalytics: React.FC = () => {
         setLoading(true);
         if (!user) return;
 
+        const role = (user.role || 'AGENCY').toUpperCase();
+
         // Fetch Trends based on role
-        if (user.role === 'MINISTRY') {
-          const res = await analyticsService.getNationalTrends();
-          setTrends(res.quarterly_trends); // Ensure chronological order for charts
-          setBenchmarks(res.summary);
-        } else if (user.role === 'STATE_OFFICER') {
+        if (role === 'STATE_OFFICER') {
           const res = await analyticsService.getStateTrends({ state: user.assigned_state || undefined });
-          setTrends(res.trends);
-          setBenchmarks(res.national_benchmark_quarter);
-        } else if (user.role === 'DISTRICT_OFFICER') {
+          setTrends(res?.trends || []);
+          setBenchmarks(res?.national_benchmark_quarter);
+        } else if (role === 'DISTRICT_OFFICER') {
           const res = await analyticsService.getDistrictTrends({ 
             state: user.assigned_state || undefined, 
             district: user.assigned_district || undefined 
           });
-          setTrends(res.trends);
-          setBenchmarks(res.state_peer_benchmark);
-        } else if (user.role === 'MP') {
+          setTrends(res?.trends || []);
+          setBenchmarks(res?.state_peer_benchmark);
+        } else if (role === 'MP') {
           const res = await analyticsService.getMPTrends({ mp_name: user.assigned_mp_name || undefined });
-          setTrends(res.trends);
-          setBenchmarks(res.house_benchmark);
+          setTrends(res?.trends || []);
+          setBenchmarks(res?.house_benchmark);
+        } else {
+          // MINISTRY, AGENCY, ADMIN, PARLIAMENT, ORGANIZATION, etc.
+          const res = await analyticsService.getNationalTrends();
+          setTrends(res?.quarterly_trends || []);
+          setBenchmarks(res?.summary);
         }
 
         // Fetch Early Warnings
         const warningsRes = await analyticsService.getEarlyWarnings({ limit: 50 });
-        setEarlyWarnings(warningsRes.alerts || []);
+        if (Array.isArray(warningsRes)) {
+          setEarlyWarnings(warningsRes);
+        } else if (warningsRes?.alerts) {
+          setEarlyWarnings(warningsRes.alerts);
+        } else {
+          setEarlyWarnings([]);
+        }
         
       } catch (err) {
         console.error("Failed to load trend analytics", err);

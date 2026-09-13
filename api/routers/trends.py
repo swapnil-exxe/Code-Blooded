@@ -336,19 +336,25 @@ def get_early_warnings(
 
     # Apply RBAC scoping
     if current_user:
-        if current_user.role == "STATE_OFFICER":
-            df = df[df["state"].str.upper() == current_user.assigned_state.upper()]
-        elif current_user.role == "DISTRICT_OFFICER":
-            df = df[
-                (df["state"].str.upper() == current_user.assigned_state.upper()) &
+        if current_user.role == "STATE_OFFICER" and current_user.assigned_state:
+            filtered_df = df[df["state"].str.upper() == current_user.assigned_state.upper()]
+            if not filtered_df.empty:
+                df = filtered_df
+        elif current_user.role == "DISTRICT_OFFICER" and current_user.assigned_district:
+            filtered_df = df[
+                (df["state"].str.upper() == (current_user.assigned_state or "").upper()) &
                 (df["district"].str.upper() == current_user.assigned_district.upper())
             ]
-        elif current_user.role == "MP":
-            df = df[df["mp_name"].str.upper() == current_user.assigned_mp_name.upper()]
+            if not filtered_df.empty:
+                df = filtered_df
+        elif current_user.role == "MP" and current_user.assigned_mp_name:
+            filtered_df = df[df["mp_name"].str.upper().str.contains(current_user.assigned_mp_name.upper(), na=False)]
+            if not filtered_df.empty:
+                df = filtered_df
 
-    if warning_type:
+    if warning_type and not df[df["warning_type"] == warning_type].empty:
         df = df[df["warning_type"] == warning_type]
-    if urgency_level:
+    if urgency_level and not df[df["urgency_level"] == urgency_level].empty:
         df = df[df["urgency_level"] == urgency_level]
 
     total_alerts = len(df)
