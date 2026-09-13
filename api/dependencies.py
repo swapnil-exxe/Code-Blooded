@@ -9,7 +9,10 @@ def get_db() -> Generator[Session, None, None]:
     try:
         yield db
     finally:
-        db.close()
+        try:
+            db.close()
+        except Exception:
+            pass
 
 class PaginationParams:
     """Dependency for validated pagination parameters."""
