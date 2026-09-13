@@ -8,7 +8,7 @@ load_dotenv(dotenv_path=env_path)
 class Settings:
     PROJECT_NAME: str = "AI-Powered Governance Analytics & Monitoring Platform"
     API_V1_STR: str = "/api/v1"
-    VERSION: str = "1.0.0"
+    VERSION: str = "1.0.1-pooler"
     DESCRIPTION: str = (
         "Production REST API for AI-Powered Governance Analytics & Monitoring Platform: "
         "Real-time tracking of anomalous cost estimates, duplicate works, fund expenditure anomalies, and SLA delays."
