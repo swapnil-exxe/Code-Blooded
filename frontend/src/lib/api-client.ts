@@ -52,10 +52,13 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response) {
       if (error.response.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
+        const isAuthRoute = error.config?.url?.includes('/auth/');
+        if (isAuthRoute || error.config?.method !== 'get') {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+          }
         }
       } else if (error.response.status === 429) {
         // SlowAPI rate limit exceeded
