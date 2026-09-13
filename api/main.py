@@ -53,13 +53,17 @@ else:
         allow_headers=["*"],
     )
 
-# Request Timing & Diagnostic Middleware
+# Request Timing & Security Headers Middleware
 @app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
+async def add_security_headers_and_timing(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
     process_time = (time.time() - start_time) * 1000.0
     response.headers["X-Process-Time-Ms"] = f"{process_time:.2f}"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
 # Register API v1 Routers (supports both /api/v1/... and root /... paths)
