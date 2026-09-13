@@ -15,7 +15,9 @@ from api.routers import (
     fund_router,
     delay_router,
     summary_router,
-    trend_router
+    trend_router,
+    chat_router,
+    admin_scraper_router
 )
 
 app = FastAPI(
@@ -33,13 +35,23 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 # CORS Middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+origins = settings.CORS_ORIGINS
+if "*" in origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=r"https?://.*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Request Timing & Diagnostic Middleware
 @app.middleware("http")
@@ -50,16 +62,14 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time-Ms"] = f"{process_time:.2f}"
     return response
 
-# Register API v1 Routers
-app.include_router(health_router, prefix=settings.API_V1_STR)
-app.include_router(auth_router, prefix=settings.API_V1_STR)
-app.include_router(works_router, prefix=settings.API_V1_STR)
-app.include_router(cost_router, prefix=settings.API_V1_STR)
-app.include_router(duplicate_router, prefix=settings.API_V1_STR)
-app.include_router(fund_router, prefix=settings.API_V1_STR)
-app.include_router(delay_router, prefix=settings.API_V1_STR)
-app.include_router(summary_router, prefix=settings.API_V1_STR)
-app.include_router(trend_router, prefix=settings.API_V1_STR)
+# Register API v1 Routers (supports both /api/v1/... and root /... paths)
+for router in [
+    health_router, auth_router, works_router, cost_router, 
+    duplicate_router, fund_router, delay_router, summary_router, 
+    trend_router, chat_router, admin_scraper_router
+]:
+    app.include_router(router, prefix=settings.API_V1_STR)
+    app.include_router(router)
 
 @app.get("/", tags=["Root"])
 def root():

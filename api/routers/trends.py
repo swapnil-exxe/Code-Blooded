@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException, status
 import pandas as pd
 import numpy as np
 
-from api.auth import CurrentUser
+from api.auth import OptionalUser
 from analytics.trends.schemas import (
     NationalTrendsResponse,
     QuarterTrendItem,
@@ -63,7 +63,7 @@ def get_warnings_df() -> pd.DataFrame:
 
 @router.get("/trends/national", response_model=NationalTrendsResponse)
 def get_national_trends(
-    current_user: CurrentUser = None
+    current_user: OptionalUser = None
 ):
     """
     Returns nationwide macro quarterly trend series (2024Q3 to 2026Q3) across
@@ -125,7 +125,7 @@ def get_national_trends(
 @router.get("/trends/state", response_model=StateTrendsResponse)
 def get_state_trends(
     state: Optional[str] = Query(None, description="State name (e.g. 'Uttar Pradesh')"),
-    current_user: CurrentUser = None
+    current_user: OptionalUser = None
 ):
     """
     Returns quarterly trends for a specific state, plus national benchmark comparison.
@@ -183,7 +183,7 @@ def get_state_trends(
 def get_district_trends(
     state: str = Query(..., description="State name"),
     district: str = Query(..., description="District name"),
-    current_user: CurrentUser = None
+    current_user: OptionalUser = None
 ):
     """
     Returns quarterly trends for a specific district, credibility tier, and state peer benchmark.
@@ -254,7 +254,7 @@ def get_district_trends(
 @router.get("/trends/mp", response_model=MPTrendsResponse)
 def get_mp_trends(
     mp_name: str = Query(..., description="Member of Parliament name"),
-    current_user: CurrentUser = None
+    current_user: OptionalUser = None
 ):
     """
     Returns tenure-to-date and fiscal year trends for an MP portfolio vs House benchmark.
@@ -326,7 +326,7 @@ def get_early_warnings(
     warning_type: Optional[str] = Query(None, description="Filter by warning type: SLA_SANCTION_CLIFF, STAGNATION_INCUBATION, BATCH_DUPLICATE_CLUSTER"),
     urgency_level: Optional[str] = Query(None, description="Filter by urgency: CRITICAL, WATCHLIST"),
     limit: int = Query(50, ge=1, le=500, description="Max alerts to return"),
-    current_user: CurrentUser = None
+    current_user: OptionalUser = None
 ):
     """
     Returns live actionable pre-breach alerts grounded in statutory guidelines

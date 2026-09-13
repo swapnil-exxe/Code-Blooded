@@ -15,7 +15,7 @@ Phase 5 implements the deterministic Delay & SLA Rule Engine for all 98,825 acti
 * **Completed Works Analyzed**: 137,792 (45.0%)
 * **Incomplete / Open Works Analyzed**: 53,150 (55.0%)
 * **Fixed Reference Date**: `2026-09-05` (latest sanction date in dataset, ensuring complete determinism and reproducibility)
-* **Execution Runtime**: 5.11 seconds
+* **Execution Runtime**: 4.88 seconds
 
 ## 3. Severity Distribution
 | Severity Tier | Work Count | Share % | Definition / Operational Meaning |

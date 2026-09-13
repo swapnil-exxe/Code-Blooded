@@ -206,3 +206,18 @@ def test_empty_string_query_params_regression(ministry_headers):
         assert "pagination" in data
         assert data["pagination"]["total_records"] > 0
 
+
+def test_unauthenticated_trend_analytics_access():
+    """Regression Test: Verify demo/unauthenticated users can access trend analytics and early warnings."""
+    endpoints = [
+        "/api/v1/analytics/trends/national",
+        "/api/v1/analytics/trends/state?state=Uttar%20Pradesh",
+        "/api/v1/analytics/trends/district?state=Uttar%20Pradesh&district=LUCKNOW",
+        "/api/v1/analytics/trends/mp?mp_name=Sonia%20Gandhi",
+        "/api/v1/analytics/early-warnings?limit=5",
+    ]
+    for url in endpoints:
+        res = client.get(url)
+        assert res.status_code == 200, f"Unauthenticated access to {url} failed with {res.status_code}: {res.text}"
+
+

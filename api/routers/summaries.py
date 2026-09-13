@@ -162,15 +162,23 @@ def get_mp_summary(
     dup_cache = {}
     try:
         sql_dup = """
-        SELECT w.mp_name, count(DISTINCT dup.id) as dup_count
-        FROM works w
-        JOIN duplicate_work_results dup ON (dup.work_id_1 = w.work_id OR dup.work_id_2 = w.work_id)
-        WHERE dup.severity = 'HIGH' AND w.mp_name IS NOT NULL
-        GROUP BY w.mp_name;
+        SELECT mp_name, count(DISTINCT dup_id) as dup_count FROM (
+            SELECT w.mp_name as mp_name, dup.id as dup_id
+            FROM duplicate_work_results dup
+            JOIN works w ON dup.work_id_1 = w.work_id
+            WHERE dup.severity = 'HIGH' AND w.mp_name IS NOT NULL
+            UNION ALL
+            SELECT w.mp_name as mp_name, dup.id as dup_id
+            FROM duplicate_work_results dup
+            JOIN works w ON dup.work_id_2 = w.work_id
+            WHERE dup.severity = 'HIGH' AND w.mp_name IS NOT NULL
+        ) sub
+        GROUP BY mp_name;
         """
         dup_rows = db.execute(text(sql_dup)).fetchall()
         dup_cache = {r[0]: r[1] for r in dup_rows}
-    except Exception:
+    except Exception as e:
+        print(f"[SUMMARY WARN] mp dup_cache query failed: {e}")
         dup_cache = {}
 
     results = []
