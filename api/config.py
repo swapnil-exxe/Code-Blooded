@@ -15,13 +15,18 @@ class Settings:
     )
     DEFAULT_PAGE_SIZE: int = 20
     MAX_PAGE_SIZE: int = 100
-    CORS_ORIGINS: list[str] = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "*",
-    ]
+    @property
+    def CORS_ORIGINS(self) -> list[str]:
+        raw = os.getenv("CORS_ORIGINS", "")
+        if raw:
+            return [o.strip() for o in raw.split(",") if o.strip()]
+        return [
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+            "*",
+        ]
 
     # Security & Authentication (Phase 6.3)
     JWT_SECRET_KEY: str = os.getenv(

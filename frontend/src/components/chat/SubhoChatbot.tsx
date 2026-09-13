@@ -111,7 +111,9 @@ export const SubhoChatbot: React.FC = () => {
     setError(null);
 
     try {
-      const endpoint = isAuthenticated ? '/api/v1/chat' : '/api/v1/public-chat';
+      const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '');
+      const endpoint = isAuthenticated ? `${apiBase}/chat` : `${apiBase}/public-chat`;
+      const fallbackEndpoint = `${apiBase}/public-chat`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
@@ -130,9 +132,9 @@ export const SubhoChatbot: React.FC = () => {
         body: JSON.stringify({ message: text, history })
       });
 
-      if (res.status === 401 && endpoint !== '/api/v1/public-chat') {
+      if (res.status === 401 && endpoint !== fallbackEndpoint) {
         // Fallback to public-chat if authenticated token is expired or invalid
-        res = await fetch('/api/v1/public-chat', {
+        res = await fetch(fallbackEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: text, history })
