@@ -116,8 +116,20 @@ def populate_database():
         # 4. Populate Fund Expenditure Results (190,942 rows)
         print("\n--- 4. Populating Fund Expenditure Results (190,942 rows) ---")
         df_fund = pd.read_parquet("data/model_outputs/fund_expenditure_anomaly/fund_expenditure_scores.parquet")
+        
+        import re
+        work_id_map = {}
+        for c_id in df_works["work_id"]:
+            m = re.match(r'^(WS/\s*MP\d+/\d{4}-\d{4}/\d+)', str(c_id))
+            if m:
+                raw_key = re.sub(r'\s+', '', m.group(1))
+                work_id_map[raw_key] = str(c_id)
+
         fund_objs = []
         for _, r in df_fund.iterrows():
+            raw_wid = str(r["work_id"]).strip()
+            canonical_wid = work_id_map.get(raw_wid, raw_wid)
+
             reasons = r.get("anomaly_reasons")
             if isinstance(reasons, (list, np.ndarray)):
                 reasons_str = ", ".join([str(x) for x in reasons if pd.notnull(x)])
@@ -125,7 +137,7 @@ def populate_database():
                 reasons_str = str(reasons) if pd.notnull(reasons) else None
 
             fund_objs.append(FundExpenditureResult(
-                work_id=str(r["work_id"]).strip(),
+                work_id=canonical_wid,
                 fund_anomaly_score=float(r["fund_anomaly_score"]),
                 raw_score=float(r["raw_score"]) if pd.notnull(r.get("raw_score")) else None,
                 severity=str(r["severity"]),

@@ -10,9 +10,20 @@ load_dotenv(dotenv_path=env_path)
 
 def get_db_url() -> str:
     """Retrieves Database URL from environment or constructs from parts, falling back to local SQLite if configured or unavailable."""
+    sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
+    sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def _ensure_sqlite_ready(path: Path):
+        if not path.exists() or path.stat().st_size < 1000000:
+            try:
+                print("[DATABASE] SQLite database missing or empty. Auto-populating full dataset...")
+                from database.populate_sqlite import populate_database
+                populate_database()
+            except Exception as e:
+                print(f"[DATABASE WARN] Auto-population of SQLite database failed: {e}")
+
     if os.getenv("USE_LOCAL_SQLITE", "true").lower() in ["true", "1", "yes"]:
-        sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
-        sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_sqlite_ready(sqlite_path)
         return f"sqlite:///{sqlite_path}"
 
     direct = os.getenv("DIRECT_URL")
@@ -35,6 +46,7 @@ def get_db_url() -> str:
     # Fallback to local SQLite database
     sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
     sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_sqlite_ready(sqlite_path)
     return f"sqlite:///{sqlite_path}"
 
 def get_engine(db_url: str = None, pool_size: int = 10, max_overflow: int = 20):

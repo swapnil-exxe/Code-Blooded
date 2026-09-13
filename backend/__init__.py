@@ -1,7 +1,6 @@
 """
-AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)
-FastAPI Backend Package (Phase 6.2)
+AI-Powered Governance Analytics & Monitoring Platform
+FastAPI Backend Package
 """
-from api.main import app
 
-__all__ = ["app"]
+__all__ = []
