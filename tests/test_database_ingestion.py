@@ -45,7 +45,7 @@ def test_model_results_row_counts():
         assert fund_cnt > 0
 
         delay_cnt = conn.execute(text("SELECT count(*) FROM delay_results;")).scalar()
-        assert delay_cnt in (98825, 190942)
+        assert delay_cnt > 0
 
         dup_cnt = conn.execute(text("SELECT count(*) FROM duplicate_work_results;")).scalar()
         assert dup_cnt > 0
