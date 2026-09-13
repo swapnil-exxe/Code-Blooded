@@ -58,7 +58,12 @@ def get_district_summary(
     LIMIT :limit;
     """
 
-    rows = db.execute(text(sql), params).fetchall()
+    rows = []
+    try:
+        rows = db.execute(text(sql), params).fetchall()
+    except Exception as e:
+        print(f"[SUMMARY ERROR] district summary query failed: {e}")
+        return []
 
     # Exact DB-level aggregation of high duplicate pairs by district
     dup_cache = {}

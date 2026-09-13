@@ -8,8 +8,25 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
+import urllib.parse
+
+def _sanitize_db_url(raw_url: str) -> str:
+    if not raw_url or "sqlite" in raw_url:
+        return raw_url
+    raw_url = raw_url.replace("postgres://", "postgresql://").replace("?pgbouncer=true", "")
+    if raw_url.count("@") > 1:
+        try:
+            prefix, rest = raw_url.rsplit("@", 1)
+            scheme, user_pass = prefix.split("://", 1)
+            user, password = user_pass.split(":", 1)
+            encoded_pass = urllib.parse.quote(password, safe="")
+            return f"{scheme}://{user}:{encoded_pass}@{rest}"
+        except Exception:
+            return raw_url
+    return raw_url
+
 def get_db_url() -> str:
-    """Retrieves Database URL from environment or constructs from parts, falling back to local SQLite if configured or unavailable."""
+    """Retrieves Database URL from environment or constructs from parts, falling back to live Supabase PostgreSQL."""
     sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
     sqlite_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -29,11 +46,11 @@ def get_db_url() -> str:
     # 1. Check direct URL or DATABASE_URL from environment (Supabase PostgreSQL)
     direct = os.getenv("DIRECT_URL")
     if direct and "[YOUR-PASSWORD]" not in direct and "YOUR_PASSWORD" not in direct:
-        return direct
+        return _sanitize_db_url(direct)
 
     url = os.getenv("DATABASE_URL")
     if url and "[YOUR-PASSWORD]" not in url and "YOUR_PASSWORD" not in url:
-        return url.replace("?pgbouncer=true", "")
+        return _sanitize_db_url(url)
 
     # 2. Check individual Postgres environment components
     password = os.getenv("DB_PASSWORD", "")
@@ -42,26 +59,12 @@ def get_db_url() -> str:
         port = os.getenv("DB_PORT", "5432")
         db = os.getenv("DB_NAME", "postgres")
         user = os.getenv("DB_USER", "postgres")
-        return f"postgresql://{user}:{password}@{host}:{port}/{db}"
+        raw_pg = f"postgresql://{user}:{password}@{host}:{port}/{db}"
+        return _sanitize_db_url(raw_pg)
 
-    # 3. Check explicit USE_LOCAL_SQLITE flag or fallback to local SQLite database
-    _ensure_sqlite_ready(sqlite_path)
-    return f"sqlite:///{sqlite_path}"
-
-    # Fallback to individual components if valid
-    password = os.getenv("DB_PASSWORD", "")
-    if password and password not in ["", "YOUR_PASSWORD", "[YOUR-PASSWORD]"]:
-        host = os.getenv("DB_HOST", "localhost")
-        port = os.getenv("DB_PORT", "5432")
-        db = os.getenv("DB_NAME", "postgres")
-        user = os.getenv("DB_USER", "postgres")
-        return f"postgresql://{user}:{password}@{host}:{port}/{db}"
-
-    # Fallback to local SQLite database
-    sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
-    sqlite_path.parent.mkdir(parents=True, exist_ok=True)
-    _ensure_sqlite_ready(sqlite_path)
-    return f"sqlite:///{sqlite_path}"
+    # 3. Default to Live Supabase PostgreSQL Connection
+    supabase_url = "postgresql://postgres:Mplads%402026!@db.fcpwrmzviqrhsdgelwmk.supabase.co:5432/postgres"
+    return supabase_url
 
 def get_engine(db_url: str = None, pool_size: int = 10, max_overflow: int = 20):
     """Creates a thread-safe SQLAlchemy engine with connection pooling."""
