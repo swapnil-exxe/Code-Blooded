@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, List
+from typing import Generic, TypeVar, List, Optional
 from pydantic import BaseModel
 
 T = TypeVar("T")
@@ -11,9 +11,17 @@ class PaginationMeta(BaseModel):
     has_next: bool
     has_prev: bool
 
+class ProvenanceMeta(BaseModel):
+    source: str = "supabase"
+    records_analyzed: int
+    generated_at: str
+    model_version: str = "1.0.0"
+    accuracy_status: str = "Accuracy unavailable — no validated ground-truth labels."
+
 class PaginatedResponse(BaseModel, Generic[T]):
     items: List[T]
     pagination: PaginationMeta
+    provenance: Optional[ProvenanceMeta] = None
 
 class HealthCheckResponse(BaseModel):
     status: str
