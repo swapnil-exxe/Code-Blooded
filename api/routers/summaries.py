@@ -69,15 +69,23 @@ def get_district_summary(
     dup_cache = {}
     try:
         sql_dup = """
-        SELECT UPPER(w.state) as state, UPPER(w.district) as district, count(DISTINCT dup.id) as dup_count
-        FROM works w
-        JOIN duplicate_work_results dup ON (dup.work_id_1 = w.work_id OR dup.work_id_2 = w.work_id)
-        WHERE dup.severity = 'HIGH'
-        GROUP BY UPPER(w.state), UPPER(w.district);
+        SELECT state, district, count(DISTINCT dup_id) as dup_count FROM (
+            SELECT UPPER(w.state) as state, UPPER(w.district) as district, dup.id as dup_id
+            FROM duplicate_work_results dup
+            JOIN works w ON dup.work_id_1 = w.work_id
+            WHERE dup.severity = 'HIGH'
+            UNION ALL
+            SELECT UPPER(w.state) as state, UPPER(w.district) as district, dup.id as dup_id
+            FROM duplicate_work_results dup
+            JOIN works w ON dup.work_id_2 = w.work_id
+            WHERE dup.severity = 'HIGH'
+        ) sub
+        GROUP BY state, district;
         """
         dup_rows = db.execute(text(sql_dup)).fetchall()
         dup_cache = {(r[0], r[1]): r[2] for r in dup_rows}
-    except Exception:
+    except Exception as e:
+        print(f"[SUMMARY WARN] dup_cache query failed: {e}")
         dup_cache = {}
 
     results = []

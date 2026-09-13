@@ -14,7 +14,7 @@ router = APIRouter(prefix="/analytics/duplicate-works", tags=["Model 2 — Dupli
 
 @router.get("", response_model=PaginatedResponse[DuplicatePairItem])
 def list_duplicate_works(
-    severity: Optional[DuplicateSeverityEnum] = Query(None, description="Filter by severity tier (default HIGH)"),
+    severity: Optional[str] = Query(None, description="Filter by severity tier (default HIGH)"),
     min_duplicate_score: Optional[float] = Query(None, ge=0.0, le=1.0, description="Minimum duplicate score"),
     is_same_mp: Optional[bool] = Query(None, description="Filter where both works recommended by same MP"),
     is_same_constituency: Optional[bool] = Query(None, description="Filter where both works in same constituency"),
@@ -27,22 +27,22 @@ def list_duplicate_works(
     """Retrieves flagged duplicate candidate pairs with server-side RBAC scoping and state/district filters."""
     query = db.query(DuplicateWorkResult)
 
-    if state or district:
+    if (state and state.strip()) or (district and district.strip()):
         w1 = aliased(Work)
         w2 = aliased(Work)
         query = query.join(w1, DuplicateWorkResult.work_id_1 == w1.work_id).join(
             w2, DuplicateWorkResult.work_id_2 == w2.work_id
         )
-        if state:
-            query = query.filter(or_(func.upper(w1.state) == func.upper(state), func.upper(w2.state) == func.upper(state)))
-        if district:
-            query = query.filter(or_(func.upper(w1.district) == func.upper(district), func.upper(w2.district) == func.upper(district)))
+        if state and state.strip():
+            query = query.filter(or_(func.upper(w1.state) == func.upper(state.strip()), func.upper(w2.state) == func.upper(state.strip())))
+        if district and district.strip():
+            query = query.filter(or_(func.upper(w1.district) == func.upper(district.strip()), func.upper(w2.district) == func.upper(district.strip())))
 
     # Server-side jurisdictional predicate injection for pairs
     query = apply_duplicate_works_scope(query, current_user)
 
-    if severity:
-        query = query.filter(DuplicateWorkResult.severity == severity.value)
+    if severity and severity.strip():
+        query = query.filter(DuplicateWorkResult.severity == severity.strip().upper())
     if min_duplicate_score is not None:
         query = query.filter(DuplicateWorkResult.duplicate_score >= min_duplicate_score)
     if is_same_mp is not None:

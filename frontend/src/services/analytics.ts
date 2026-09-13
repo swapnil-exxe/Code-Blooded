@@ -14,6 +14,17 @@ import {
   MOCK_DISTRICT_SUMMARIES,
 } from './mockData';
 
+function cleanParams<T extends Record<string, any>>(params?: T): Record<string, any> | undefined {
+  if (!params) return undefined;
+  const cleaned: Record<string, any> = {};
+  for (const [key, val] of Object.entries(params)) {
+    if (val !== undefined && val !== null && val !== '') {
+      cleaned[key] = val;
+    }
+  }
+  return Object.keys(cleaned).length > 0 ? cleaned : undefined;
+}
+
 export const analyticsService = {
   // Model 1: Cost Anomalies
   async getCostAnomalies(params?: {
@@ -24,7 +35,7 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<CostAnomalyItem>> {
-    const { data } = await apiClient.get<PaginatedResponse<CostAnomalyItem>>('/analytics/cost-anomalies', { params });
+    const { data } = await apiClient.get<PaginatedResponse<CostAnomalyItem>>('/analytics/cost-anomalies', { params: cleanParams(params) });
     return data;
   },
 
@@ -44,7 +55,7 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<DuplicatePairItem>> {
-    const { data } = await apiClient.get<PaginatedResponse<DuplicatePairItem>>('/analytics/duplicate-works', { params });
+    const { data } = await apiClient.get<PaginatedResponse<DuplicatePairItem>>('/analytics/duplicate-works', { params: cleanParams(params) });
     return data;
   },
 
@@ -65,7 +76,7 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<FundAnomalyItem>> {
-    const { data } = await apiClient.get<PaginatedResponse<FundAnomalyItem>>('/analytics/fund-anomalies', { params });
+    const { data } = await apiClient.get<PaginatedResponse<FundAnomalyItem>>('/analytics/fund-anomalies', { params: cleanParams(params) });
     return data;
   },
 
@@ -84,7 +95,7 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<DelayItem>> {
-    const { data } = await apiClient.get<PaginatedResponse<DelayItem>>('/analytics/delays', { params });
+    const { data } = await apiClient.get<PaginatedResponse<DelayItem>>('/analytics/delays', { params: cleanParams(params) });
     return data;
   },
 
@@ -96,13 +107,13 @@ export const analyticsService = {
   // Summaries
   async getDistrictSummaries(params?: { state?: string; limit?: number }): Promise<DistrictSummaryItem[]> {
     const queryParams = { limit: 5000, ...params };
-    const { data } = await apiClient.get<DistrictSummaryItem[]>('/analytics/district-summary', { params: queryParams });
+    const { data } = await apiClient.get<DistrictSummaryItem[]>('/analytics/district-summary', { params: cleanParams(queryParams) });
     return data;
   },
 
   async getMPSummaries(params?: { state?: string; house?: string; limit?: number; mp_name?: string }): Promise<MPSummaryItem[]> {
     const queryParams = { limit: 5000, ...params };
-    const { data } = await apiClient.get<MPSummaryItem[]>('/analytics/mp-summary', { params: queryParams });
+    const { data } = await apiClient.get<MPSummaryItem[]>('/analytics/mp-summary', { params: cleanParams(queryParams) });
     return data;
   },
 

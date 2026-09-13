@@ -13,7 +13,7 @@ router = APIRouter(prefix="/analytics/cost-anomalies", tags=["Model 1 — Cost A
 
 @router.get("", response_model=PaginatedResponse[CostAnomalyItem])
 def list_cost_anomalies(
-    severity: Optional[CostSeverityEnum] = Query(None, description="Filter by severity tier"),
+    severity: Optional[str] = Query(None, description="Filter by severity tier"),
     min_score: Optional[float] = Query(None, ge=0.0, le=1.0, description="Minimum calibrated cost anomaly score"),
     state: Optional[str] = Query(None, description="Filter by State (via joined work)"),
     district: Optional[str] = Query(None, description="Filter by District (via joined work)"),
@@ -26,24 +26,25 @@ def list_cost_anomalies(
     query = db.query(CostAnomalyResult)
 
     already_joined = False
-    if state or district:
+    if state and state.strip():
         query = query.join(Work, CostAnomalyResult.work_id == Work.work_id)
         already_joined = True
-        if state:
-            query = query.filter(func.upper(Work.state) == state.upper())
-        if district:
-            query = query.filter(func.upper(Work.district) == district.upper())
+        query = query.filter(func.upper(Work.state) == state.strip().upper())
+    if district and district.strip():
+        if not already_joined:
+            query = query.join(Work, CostAnomalyResult.work_id == Work.work_id)
+            already_joined = True
+        query = query.filter(func.upper(Work.district) == district.strip().upper())
 
     # Server-side jurisdictional predicate injection
     query, _ = apply_work_joined_scope(query, current_user, CostAnomalyResult, already_joined=already_joined)
 
-
-    if severity:
-        query = query.filter(CostAnomalyResult.severity == severity.value)
+    if severity and severity.strip():
+        query = query.filter(CostAnomalyResult.severity == severity.strip().upper())
     if min_score is not None:
         query = query.filter(CostAnomalyResult.cost_anomaly_score >= min_score)
-    if peer_group_level:
-        query = query.filter(CostAnomalyResult.peer_group_level == peer_group_level)
+    if peer_group_level and peer_group_level.strip():
+        query = query.filter(CostAnomalyResult.peer_group_level == peer_group_level.strip())
 
     total_records = query.count()
     items = query.order_by(CostAnomalyResult.cost_anomaly_score.desc()).offset(pagination.offset).limit(pagination.page_size).all()

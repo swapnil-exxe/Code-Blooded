@@ -13,8 +13,8 @@ router = APIRouter(prefix="/analytics/delays", tags=["Model 4 — Statutory Dela
 
 @router.get("", response_model=PaginatedResponse[DelayItem])
 def list_delays(
-    severity: Optional[DelaySeverityEnum] = Query(None, description="Filter by delay severity tier"),
-    primary_delay_type: Optional[DelayTypeEnum] = Query(None, description="Filter by statutory delay rule type"),
+    severity: Optional[str] = Query(None, description="Filter by delay severity tier"),
+    primary_delay_type: Optional[str] = Query(None, description="Filter by statutory delay rule type"),
     min_days_overdue: Optional[int] = Query(None, ge=0, description="Minimum days overdue past statutory SLA"),
     state: Optional[str] = Query(None, description="Filter by State (via joined work)"),
     district: Optional[str] = Query(None, description="Filter by District (via joined work)"),
@@ -26,20 +26,22 @@ def list_delays(
     query = db.query(DelayResult)
 
     already_joined = False
-    if state or district:
+    if state and state.strip():
         query = query.join(Work, DelayResult.work_id == Work.work_id)
         already_joined = True
-        if state:
-            query = query.filter(func.upper(Work.state) == func.upper(state))
-        if district:
-            query = query.filter(func.upper(Work.district) == func.upper(district))
+        query = query.filter(func.upper(Work.state) == func.upper(state.strip()))
+    if district and district.strip():
+        if not already_joined:
+            query = query.join(Work, DelayResult.work_id == Work.work_id)
+            already_joined = True
+        query = query.filter(func.upper(Work.district) == func.upper(district.strip()))
 
     query, already_joined = apply_work_joined_scope(query, current_user, DelayResult, already_joined)
 
-    if severity:
-        query = query.filter(DelayResult.severity == severity.value)
-    if primary_delay_type:
-        query = query.filter(DelayResult.primary_delay_type == primary_delay_type.value)
+    if severity and severity.strip():
+        query = query.filter(DelayResult.severity == severity.strip().upper())
+    if primary_delay_type and primary_delay_type.strip():
+        query = query.filter(DelayResult.primary_delay_type == primary_delay_type.strip().upper())
     if min_days_overdue is not None:
         query = query.filter(DelayResult.open_work_overdue_days >= min_days_overdue)
 

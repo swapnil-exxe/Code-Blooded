@@ -13,8 +13,8 @@ router = APIRouter(prefix="/analytics/fund-anomalies", tags=["Model 3 — Fund &
 
 @router.get("", response_model=PaginatedResponse[FundAnomalyItem])
 def list_fund_anomalies(
-    severity: Optional[FundSeverityEnum] = Query(None, description="Filter by severity tier"),
-    audit_category: Optional[FundAuditCategoryEnum] = Query(None, description="Filter by financial audit category"),
+    severity: Optional[str] = Query(None, description="Filter by severity tier"),
+    audit_category: Optional[str] = Query(None, description="Filter by financial audit category"),
     min_score: Optional[float] = Query(None, ge=0.0, le=1.0, description="Minimum calibrated fund anomaly score"),
     min_utilization: Optional[float] = Query(None, ge=0.0, description="Minimum utilization ratio"),
     max_utilization: Optional[float] = Query(None, ge=0.0, description="Maximum utilization ratio"),
@@ -28,20 +28,22 @@ def list_fund_anomalies(
     query = db.query(FundExpenditureResult)
 
     already_joined = False
-    if state or district:
+    if state and state.strip():
         query = query.join(Work, FundExpenditureResult.work_id == Work.work_id)
         already_joined = True
-        if state:
-            query = query.filter(func.upper(Work.state) == func.upper(state))
-        if district:
-            query = query.filter(func.upper(Work.district) == func.upper(district))
+        query = query.filter(func.upper(Work.state) == func.upper(state.strip()))
+    if district and district.strip():
+        if not already_joined:
+            query = query.join(Work, FundExpenditureResult.work_id == Work.work_id)
+            already_joined = True
+        query = query.filter(func.upper(Work.district) == func.upper(district.strip()))
 
     query, already_joined = apply_work_joined_scope(query, current_user, FundExpenditureResult, already_joined)
 
-    if severity:
-        query = query.filter(FundExpenditureResult.severity == severity.value)
-    if audit_category:
-        query = query.filter(FundExpenditureResult.audit_category == audit_category.value)
+    if severity and severity.strip():
+        query = query.filter(FundExpenditureResult.severity == severity.strip().upper())
+    if audit_category and audit_category.strip():
+        query = query.filter(FundExpenditureResult.audit_category == audit_category.strip().upper())
     if min_score is not None:
         query = query.filter(FundExpenditureResult.fund_anomaly_score >= min_score)
     if min_utilization is not None:
