@@ -26,17 +26,27 @@ def get_db_url() -> str:
             t = threading.Thread(target=_bg_populate, daemon=True)
             t.start()
 
-    if os.getenv("USE_LOCAL_SQLITE", "true").lower() in ["true", "1", "yes"]:
-        _ensure_sqlite_ready(sqlite_path)
-        return f"sqlite:///{sqlite_path}"
-
+    # 1. Check direct URL or DATABASE_URL from environment (Supabase PostgreSQL)
     direct = os.getenv("DIRECT_URL")
-    if direct and "[YOUR-PASSWORD]" not in direct:
+    if direct and "[YOUR-PASSWORD]" not in direct and "YOUR_PASSWORD" not in direct:
         return direct
 
     url = os.getenv("DATABASE_URL")
-    if url and "[YOUR-PASSWORD]" not in url:
+    if url and "[YOUR-PASSWORD]" not in url and "YOUR_PASSWORD" not in url:
         return url.replace("?pgbouncer=true", "")
+
+    # 2. Check individual Postgres environment components
+    password = os.getenv("DB_PASSWORD", "")
+    if password and password not in ["", "YOUR_PASSWORD", "[YOUR-PASSWORD]"]:
+        host = os.getenv("DB_HOST", "localhost")
+        port = os.getenv("DB_PORT", "5432")
+        db = os.getenv("DB_NAME", "postgres")
+        user = os.getenv("DB_USER", "postgres")
+        return f"postgresql://{user}:{password}@{host}:{port}/{db}"
+
+    # 3. Check explicit USE_LOCAL_SQLITE flag or fallback to local SQLite database
+    _ensure_sqlite_ready(sqlite_path)
+    return f"sqlite:///{sqlite_path}"
 
     # Fallback to individual components if valid
     password = os.getenv("DB_PASSWORD", "")
