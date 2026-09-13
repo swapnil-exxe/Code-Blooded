@@ -12,14 +12,22 @@ router = APIRouter(tags=["System & Metadata"])
 def health_check(db: Session = Depends(get_db)):
     """Live health status and latency benchmark against Supabase PostgreSQL."""
     t0 = time.time()
-    count = db.execute(text("SELECT count(*) FROM works;")).scalar()
+    status_str = "healthy"
+    db_name = "PostgreSQL on Supabase"
+    count = 0
+    try:
+        count = db.execute(text("SELECT count(*) FROM works;")).scalar() or 0
+    except Exception as e:
+        status_str = "degraded"
+        db_name = f"Database: {str(e)[:60]}"
+
     latency_ms = (time.time() - t0) * 1000.0
 
     return HealthCheckResponse(
-        status="healthy",
-        database="PostgreSQL on Supabase",
+        status=status_str,
+        database=db_name,
         db_latency_ms=round(latency_ms, 2),
-        total_works=count or 0,
+        total_works=count,
         version=settings.VERSION
     )
 
