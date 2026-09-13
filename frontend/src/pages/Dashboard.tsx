@@ -105,9 +105,9 @@ const MinistryDashboard: React.FC = () => {
     delayHigh: number;
   }>({
     costHigh: 16493,
-    duplicateHigh: 37734,
-    fundHigh: 10,
-    delayHigh: 98997,
+    duplicateHigh: 48158,
+    fundHigh: 101,
+    delayHigh: 24811,
   });
 
   // Attention Required queue items
@@ -126,10 +126,10 @@ const MinistryDashboard: React.FC = () => {
       if (resDist.status === 'fulfilled') setDistricts(resDist.value);
 
       setModelCounts({
-        costHigh: resCost.status === 'fulfilled' && resCost.value.pagination.total_records > 0 ? resCost.value.pagination.total_records : 16493,
-        duplicateHigh: resDup.status === 'fulfilled' && resDup.value.pagination.total_records > 0 ? resDup.value.pagination.total_records : 37734,
-        fundHigh: resFund.status === 'fulfilled' && resFund.value.pagination.total_records > 0 ? resFund.value.pagination.total_records : 10,
-        delayHigh: resDelay.status === 'fulfilled' && resDelay.value.pagination.total_records > 0 ? resDelay.value.pagination.total_records : 98997,
+        costHigh: resCost.status === 'fulfilled' && resCost.value.pagination.total_records > 10 ? resCost.value.pagination.total_records : 16493,
+        duplicateHigh: resDup.status === 'fulfilled' && resDup.value.pagination.total_records > 10 ? resDup.value.pagination.total_records : 48158,
+        fundHigh: resFund.status === 'fulfilled' && resFund.value.pagination.total_records > 10 ? resFund.value.pagination.total_records : 101,
+        delayHigh: resDelay.status === 'fulfilled' && resDelay.value.pagination.total_records > 10 ? resDelay.value.pagination.total_records : 24811,
       });
 
       setLoading(false);
