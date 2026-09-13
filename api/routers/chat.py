@@ -195,10 +195,10 @@ async def call_groq_api(system_prompt: str, user_message: str, history: List[Cha
         messages.append({"role": h.role, "content": h.content})
     messages.append({"role": "user", "content": user_message})
 
-    candidate_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]
+    candidate_models = ["groq/compound-mini", "qwen/qwen3.6-27b", "allam-2-7b"]
 
     try:
-        async with httpx.AsyncClient(timeout=3.0) as client:
+        async with httpx.AsyncClient(timeout=6.0) as client:
             for model in candidate_models:
                 payload = {
                     "model": model,
