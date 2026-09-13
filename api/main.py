@@ -98,7 +98,7 @@ if dist_dir.exists():
             return FileResponse(file_path)
         return FileResponse(dist_dir / "index.html")
 else:
-    @app.get("/", tags=["Root"])
+    @app.api_route("/", methods=["GET", "HEAD"], tags=["Root"])
     def root():
         return {
             "platform": settings.PROJECT_NAME,

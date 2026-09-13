@@ -8,7 +8,7 @@ from api.config import settings
 
 router = APIRouter(tags=["System & Metadata"])
 
-@router.get("/health", response_model=HealthCheckResponse)
+@router.api_route("/health", methods=["GET", "HEAD"], response_model=HealthCheckResponse)
 def health_check(db: Session = Depends(get_db)):
     """Live health status and latency benchmark against Supabase PostgreSQL."""
     t0 = time.time()
