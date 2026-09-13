@@ -15,12 +15,16 @@ def get_db_url() -> str:
 
     def _ensure_sqlite_ready(path: Path):
         if not path.exists() or path.stat().st_size < 1000000:
-            try:
-                print("[DATABASE] SQLite database missing or empty. Auto-populating full dataset...")
-                from database.populate_sqlite import populate_database
-                populate_database()
-            except Exception as e:
-                print(f"[DATABASE WARN] Auto-population of SQLite database failed: {e}")
+            import threading
+            print("[DATABASE] SQLite database missing or empty. Starting background auto-population...")
+            def _bg_populate():
+                try:
+                    from database.populate_sqlite import populate_database
+                    populate_database()
+                except Exception as e:
+                    print(f"[DATABASE WARN] Auto-population of SQLite database failed: {e}")
+            t = threading.Thread(target=_bg_populate, daemon=True)
+            t.start()
 
     if os.getenv("USE_LOCAL_SQLITE", "true").lower() in ["true", "1", "yes"]:
         _ensure_sqlite_ready(sqlite_path)
