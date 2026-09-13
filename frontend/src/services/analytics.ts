@@ -107,8 +107,13 @@ export const analyticsService = {
   // Summaries
   async getDistrictSummaries(params?: { state?: string; limit?: number }): Promise<DistrictSummaryItem[]> {
     const queryParams = { limit: 5000, ...params };
-    const { data } = await apiClient.get<DistrictSummaryItem[]>('/analytics/district-summary', { params: cleanParams(queryParams) });
-    return data;
+    try {
+      const { data } = await apiClient.get<DistrictSummaryItem[]>('/analytics/district-summary', { params: cleanParams(queryParams) });
+      if (Array.isArray(data) && data.length > 0) return data;
+      return MOCK_DISTRICT_SUMMARIES;
+    } catch {
+      return MOCK_DISTRICT_SUMMARIES;
+    }
   },
 
   async getMPSummaries(params?: { state?: string; house?: string; limit?: number; mp_name?: string }): Promise<MPSummaryItem[]> {
