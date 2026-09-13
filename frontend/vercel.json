@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "http://localhost:8000/api/$1" },
+    { "source": "/api/(.*)", "destination": "https://mplads-ai-command-center-ai-powered.onrender.com/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
