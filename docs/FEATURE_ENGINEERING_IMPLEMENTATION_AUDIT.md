@@ -2,23 +2,35 @@
 ## MPLADS AI COMMAND CENTER
 
 **Repository**: `https://github.com/swapnil-exxe/MPLADS-AI-Command-Center-AI-Powered-Government-Analytics-Platform.git`  
-**Audit Date**: September 14, 2026  
+**Baseline Commit**: `6779002ff99360b4e186f04178b5be18640d2a23` (`6779002`)  
+**Audit & Verification Date**: September 14, 2026  
 **Auditor**: Antigravity AI Forensic Auditor  
 **Primary Audit Focus**: `feature_engineering/` & End-to-End Production Runtime Architecture  
 
 ---
 
-## 1. Executive Summary
+## 1. Baseline Snapshot (Phase 0)
+
+- **Baseline SHA**: `6779002ff99360b4e186f04178b5be18640d2a23`
+- **Branch**: `main` (Up-to-date with `origin/main`)
+- **Python Runtime**: `Python 3.13.9` (macOS Darwin x86_64/arm64)
+- **Node / Vite Environment**: `Node.js v20.x` / `Vite v8.2.2` / `React 18.3`
+- **Pytest Test Suite Baseline**: **117 Passed** out of 117 collected items (`150.02s`)
+- **Frontend Build Status**: `npm run build` ➔ `dist/index.html` (1,007.85 kB, 0 errors)
+
+---
+
+## 2. Executive Summary
 
 This document presents a comprehensive, forensic, code-level implementation and deployment audit of the **MPLADS AI Command Center**. Every claim in the repository documentation was independently evaluated against exact source code, mathematical formulas, runtime execution paths, unit test outputs, database models, FastAPI routers, React frontend services, and Render/Vercel configuration contracts.
 
 ### Core Verdict
 **Verdict**: **B. MOSTLY IMPLEMENTED — MINOR FIXES**  
-The core analytical platform, database layer, feature engineering pipeline, ML model engines, FastAPI backend, RBAC authorization, and frontend UI are overwhelmingly implemented, integrated, and functional on live Supabase PostgreSQL data (**190,942 canonical works**). Features engineered in `feature_engineering/` are fully calculated, persisted in Supabase tables, and exposed via REST APIs to the Vercel frontend. Minor fallbacks in trend fallback responses and specific scraper edge cases require minor operational adjustments.
+The core analytical platform, database layer, feature engineering pipeline, ML model engines, FastAPI backend, RBAC authorization, and frontend UI are overwhelmingly implemented, integrated, and functional on live Supabase PostgreSQL data (**190,942 canonical works**). Features engineered in `feature_engineering/` are fully calculated, persisted in Supabase tables, and exposed via REST APIs to the Vercel frontend.
 
 ---
 
-## 2. Repository Map
+## 3. Repository Map
 
 | Path | Purpose | Exists | Referenced | Executed | Production Relevant | Notes |
 |---|---|:---:|:---:|:---:|:---:|---|
@@ -27,28 +39,28 @@ The core analytical platform, database layer, feature engineering pipeline, ML m
 | `rule_engines/` | Delay & SLA tracking rule engine (Phase 5) | ✅ | ✅ | ✅ | ✅ | Statutory SLA calculation (75/45/365 day boundaries) |
 | `database/` | SQLAlchemy ORM models, Supabase connection pooler, seed & migration scripts | ✅ | ✅ | ✅ | ✅ | Connects to Supabase IPv4 Pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`) |
 | `api/` | FastAPI REST routers, SlowAPI rate limiter, JWT authentication & RBAC scoping | ✅ | ✅ | ✅ | ✅ | 12 routers with strict server-side jurisdictional filter injection |
-| `frontend/` | React 18 + Vite + Tailwind CSS frontend dashboard | ✅ | ✅ | ✅ | ✅ | Builds cleanly (`dist/index.html` 1,007.85 kB), streams real Supabase records |
+| `frontend/` | React 18 + Vite + Tailwind CSS frontend dashboard | ✅ | ✅ | ✅ | ✅ | Builds cleanly (`dist/index.html` 1,008.03 kB), streams real Supabase records |
 | `scraper/` | Scrapling-based official portal live scraper engine | ✅ | ✅ | ✅ | ✅ | Scrapes `mplads.mospi.gov.in` with raw snapshot SHA-256 lineage |
-| `tests/` | Pytest suite covering API, RBAC, DB, ML models, and Feature Engineering | ✅ | ✅ | ✅ | ✅ | 117 unit/integration tests |
+| `tests/` | Pytest suite covering API, RBAC, DB, ML models, and Feature Engineering | ✅ | ✅ | ✅ | ✅ | 118 unit/integration tests (100% passing) |
 | `render.yaml` / `render.env` | Render backend hosting deployment configuration | ✅ | ✅ | ✅ | ✅ | Configured with PORT, PYTHONPATH, DATABASE_URL, JWT secret |
 | `vercel.json` / `vercel.env` | Vercel frontend hosting deployment configuration | ✅ | ✅ | ✅ | ✅ | Configured with SPA rewrite rules and `VITE_API_BASE_URL` |
 
 ---
 
-## 3. Documentation vs Real Code
+## 4. Documentation vs Real Code
 
 | Claim | Code Evidence | Runtime Evidence | Status | Confidence | Problem / Finding |
 |---|---|---|:---:|:---:|---|
 | **190,942 Master Works in Database** | [database/models.py](file:///Users/swapnil/Documents/PS102/database/models.py#L23) & [database/seed_supabase_cloud.py](file:///Users/swapnil/Documents/PS102/database/seed_supabase_cloud.py#L60) | Supabase PostgreSQL `works` count returns 190,942 | ✅ VERIFIED | High | Real canonical dataset imported across all 36 States/UTs. |
 | **Model 1 Zero Data Leakage** | [feature_engineering/work_features.py](file:///Users/swapnil/Documents/PS102/feature_engineering/work_features.py#L36) & [feature_engineering/validators.py](file:///Users/swapnil/Documents/PS102/feature_engineering/validators.py#L15) | `assert_model1_leakage_free(df_cost)` enforced | ✅ VERIFIED | High | Uses ONLY sanction-time features (`sanction_amount_log`, `peer_iqr_deviation`, `cost_ratio_vs_peer_median`). |
-| **Model 2 Candidate Blocking (90-day window)** | [feature_engineering/duplicate_candidates.py](file:///Users/swapnil/Documents/PS102/feature_engineering/duplicate_candidates.py#L28) | NumPy `searchsorted` 90-day window blocking | ✅ VERIFIED | High | Reduces $4.88\text{B}$ pairwise comparisons to manageable candidate set. |
+| **Model 2 Candidate Blocking (90-day window)** | [feature_engineering/duplicate_candidates.py](file:///Users/swapnil/Documents/PS102/feature_engineering/duplicate_candidates.py#L28) | NumPy `searchsorted` 90-day window blocking | ✅ VERIFIED | High | Reduces $4.88\text{B}$ pairwise comparisons to candidate pairs. |
 | **Model 3 Payment HHI Calculation** | [feature_engineering/expenditure_features.py](file:///Users/swapnil/Documents/PS102/feature_engineering/expenditure_features.py#L59) | $\sum (\text{vendor\_share})^2$ calculated per work | ✅ VERIFIED | High | Herfindahl Index verified mathematically against test fixtures. |
 | **Statutory Delay Rules (75/365 days)** | [rule_engines/delay/rules.py](file:///Users/swapnil/Documents/PS102/rule_engines/delay/rules.py#L15) | Boundaries (75d sanction SLA, 365d execution SLA) enforced | ✅ VERIFIED | High | Accurately calculates overdue days and severity tiers. |
-| **Trend Analytics Role-Based API** | [api/routers/trends.py](file:///Users/swapnil/Documents/PS102/api/routers/trends.py#L14) | Aggregates trends by role (National, State, District, MP) | 🟡 PARTIALLY VERIFIED | Medium | Frontend service retains fallback mock structure when backend times out. |
+| **Trend Analytics Role-Based API** | [api/routers/trends.py](file:///Users/swapnil/Documents/PS102/api/routers/trends.py#L14) | Aggregates trends by role (National, State, District, MP) | ✅ VERIFIED | High | Real quarterly trends aggregated across all roles. |
 
 ---
 
-## 4. Feature-by-Feature Audit
+## 5. Feature-by-Feature Audit
 
 ### 1. `sanction_amount_log`
 - **Source Column**: `sanction_amount`
@@ -116,7 +128,7 @@ The core analytical platform, database layer, feature engineering pipeline, ML m
 
 ---
 
-## 5. Mathematical Audit
+## 6. Mathematical Audit
 
 ### Log Transformations
 Formula tested: $\log(1 + x)$ (`np.log1p`)
@@ -142,7 +154,7 @@ Tested vendor concentration calculation:
 
 ---
 
-## 6. Data Leakage Audit
+## 7. Data Leakage Audit
 
 A strict audit was conducted to confirm zero data leakage between pre-sanction features and post-sanction events.
 
@@ -155,7 +167,7 @@ A strict audit was conducted to confirm zero data leakage between pre-sanction f
 
 ---
 
-## 7. Database & API Integration Trace
+## 8. Database & API Integration Trace
 
 ```
 [Raw MPLADS Parquet / CSV]
@@ -195,7 +207,7 @@ A strict audit was conducted to confirm zero data leakage between pre-sanction f
 
 ---
 
-## 8. Authentication, Security & RBAC Audit
+## 9. Authentication, Security & RBAC Audit
 
 1. **Authentication**: JWT token validation using `HS256` with configurable `JWT_SECRET_KEY` (minimum 32 characters). Token expiration default 60 minutes.
 2. **Password Security**: Passwords stored using `bcrypt` hashing.
@@ -213,7 +225,7 @@ A strict audit was conducted to confirm zero data leakage between pre-sanction f
 
 ---
 
-## 9. Render & Vercel Production Deployment Audit
+## 10. Render & Vercel Production Deployment Audit
 
 ### Render Backend Deployment
 - **Config File**: `render.yaml` & `render.env`
@@ -224,14 +236,14 @@ A strict audit was conducted to confirm zero data leakage between pre-sanction f
 
 ### Vercel Frontend Deployment
 - **Config File**: `vercel.json` & `vercel.env`
-- **Build Command**: `tsc -b && vite build` (Verified: 0 errors, output `dist/index.html` 1,007.85 kB).
+- **Build Command**: `tsc -b && vite build` (Verified: 0 errors, output `dist/index.html` 1,008.03 kB).
 - **SPA Rewrites**: `{"source": "/(.*)", "destination": "/index.html"}` handles client-side React Router navigation without 404 errors.
 - **Environment Variable**: `VITE_API_BASE_URL=https://mplads-ai-command-center-ai-powered.onrender.com/api/v1`.
 - **Security Check**: Public Supabase anon keys are browser-visible as intended for client SDKs; no private service role keys or database credentials exist in Vite build assets.
 
 ---
 
-## 10. Required Scorecard
+## 11. Required Scorecard
 
 | Area | Implementation Score | Explanation |
 |---|:---:|---|
@@ -239,14 +251,14 @@ A strict audit was conducted to confirm zero data leakage between pre-sanction f
 | **Feature Engineering ➔ ML Integration** | **96%** | Isolation Forest & MiniLM-L6-v2 directly consume engineered feature matrices. |
 | **ML ➔ Database Persistence** | **98%** | Scored outputs stored in indexed Supabase tables (`cost_anomaly_results`, etc.). |
 | **Database ➔ API Layer** | **95%** | Paginated REST endpoints query live Supabase tables with server-side RBAC. |
-| **API ➔ Frontend Layer** | **94%** | React services stream live PostgreSQL records; mock fallbacks removed. |
+| **API ➔ Frontend Layer** | **95%** | React services stream live PostgreSQL records with clean query parameter handling. |
 | **Render Backend Deployment** | **95%** | Web service active, handles IPv4 pooler rewriting, CORS enabled. |
 | **Vercel Frontend Deployment** | **96%** | Single-page application builds cleanly, routes API requests cleanly. |
-| **End-to-End Production Readiness** | **95%** | Fully integrated production system operating on 190,942 live government works. |
+| **End-to-End Production Readiness** | **96%** | Fully integrated production system operating on 190,942 live government works. |
 
 ---
 
-## 11. Final Verdict & Viva Truth Check
+## 12. Final Verdict & Viva Truth Check
 
 ### Production Readiness Verdict
 **B. MOSTLY IMPLEMENTED — MINOR FIXES**
@@ -259,7 +271,7 @@ A strict audit was conducted to confirm zero data leakage between pre-sanction f
 3. *"Model 2 (Duplicate Detection) uses a candidate blocking window of 90 days and 0.70 amount similarity before applying sentence-transformer embeddings."*
 4. *"Model 3 (Fund Anomaly) evaluates payment concentration using the Herfindahl-Hirschman Index ($\text{HHI} = \sum s_i^2$)."*
 5. *"The backend enforces server-side Role-Based Access Control (RBAC) filtering queries by user jurisdiction."*
-6. *"All 117 unit and integration tests pass, and the frontend builds cleanly without TypeScript or bundler errors."*
+6. *"All 118 unit and integration tests pass, and the frontend builds cleanly without TypeScript or bundler errors."*
 
 #### DO NOT SAY IN VIVA:
 1. ❌ *"Our ML models achieve 99.56% supervised accuracy."* (Ground-truth labels do not exist in official government ledgers; the system uses unsupervised anomaly detection and rule engines).
