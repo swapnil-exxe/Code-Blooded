@@ -62,18 +62,14 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time-Ms"] = f"{process_time:.2f}"
     return response
 
-# Register API v1 Routers
-app.include_router(health_router, prefix=settings.API_V1_STR)
-app.include_router(auth_router, prefix=settings.API_V1_STR)
-app.include_router(works_router, prefix=settings.API_V1_STR)
-app.include_router(cost_router, prefix=settings.API_V1_STR)
-app.include_router(duplicate_router, prefix=settings.API_V1_STR)
-app.include_router(fund_router, prefix=settings.API_V1_STR)
-app.include_router(delay_router, prefix=settings.API_V1_STR)
-app.include_router(summary_router, prefix=settings.API_V1_STR)
-app.include_router(trend_router, prefix=settings.API_V1_STR)
-app.include_router(chat_router, prefix=settings.API_V1_STR)
-app.include_router(admin_scraper_router, prefix=settings.API_V1_STR)
+# Register API v1 Routers (supports both /api/v1/... and root /... paths)
+for router in [
+    health_router, auth_router, works_router, cost_router, 
+    duplicate_router, fund_router, delay_router, summary_router, 
+    trend_router, chat_router, admin_scraper_router
+]:
+    app.include_router(router, prefix=settings.API_V1_STR)
+    app.include_router(router)
 
 # Serve Production Single-File React SPA Bundle
 from pathlib import Path

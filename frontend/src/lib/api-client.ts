@@ -1,8 +1,24 @@
 import axios from 'axios';
 
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+export function getApiBaseUrl(): string {
+  let envUrl = (import.meta.env.VITE_API_BASE_URL || '/api/v1').trim();
+  if (envUrl.endsWith('/')) {
+    envUrl = envUrl.slice(0, -1);
+  }
+  if (!envUrl.includes('/api/v1')) {
+    if (envUrl.endsWith('/api')) {
+      envUrl = `${envUrl}/v1`;
+    } else {
+      envUrl = `${envUrl}/api/v1`;
+    }
+  }
+  return envUrl;
+}
+
+const baseURL = getApiBaseUrl();
+
 export const apiClient = axios.create({
-  baseURL: rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl,
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

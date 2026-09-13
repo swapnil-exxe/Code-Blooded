@@ -285,6 +285,8 @@ def build_fallback_response(role: str, user_message: str, context: Dict[str, Any
 # -------------------------------------------------------------------------
 
 @router.post("/public-chat", response_model=ChatResponse)
+@router.post("/subho-ai/public-chat", response_model=ChatResponse)
+@router.post("/subho-ai/query", response_model=ChatResponse)
 async def public_chat(request: Request, body: ChatRequest, db: Session = Depends(get_db)):
     """Unauthenticated public landing page chatbot endpoint."""
     user_msg = body.message.strip()
@@ -337,6 +339,7 @@ async def public_chat(request: Request, body: ChatRequest, db: Session = Depends
     )
 
 @router.post("/chat", response_model=ChatResponse)
+@router.post("/subho-ai/chat", response_model=ChatResponse)
 async def authenticated_chat(
     request: Request,
     body: ChatRequest,

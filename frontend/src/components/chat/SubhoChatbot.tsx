@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { getApiBaseUrl } from '@/lib/api-client';
 import { 
   MessageSquare, 
   X, 
@@ -111,7 +112,7 @@ export const SubhoChatbot: React.FC = () => {
     setError(null);
 
     try {
-      const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '');
+      const apiBase = getApiBaseUrl();
       const endpoint = isAuthenticated ? `${apiBase}/chat` : `${apiBase}/public-chat`;
       const fallbackEndpoint = `${apiBase}/public-chat`;
       const headers: Record<string, string> = {
