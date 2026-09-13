@@ -189,3 +189,20 @@ def test_mp_summary_aggregation(ministry_headers):
     assert "total_works" in first
     assert first["total_works"] > 0
     assert 0.0 <= first["completion_rate"] <= 100.0
+
+
+def test_empty_string_query_params_regression(ministry_headers):
+    """Regression Test: Verify empty string query parameters do not trigger HTTP 422 validation errors."""
+    endpoints = [
+        "/api/v1/analytics/cost-anomalies?page=1&page_size=5&severity=&state=&district=",
+        "/api/v1/analytics/duplicate-works?page=1&page_size=5&severity=&state=&district=",
+        "/api/v1/analytics/fund-anomalies?page=1&page_size=5&severity=&audit_category=&state=&district=",
+        "/api/v1/analytics/delays?page=1&page_size=5&severity=&primary_delay_type=&state=&district=",
+    ]
+    for url in endpoints:
+        res = client.get(url, headers=ministry_headers)
+        assert res.status_code == 200, f"Endpoint {url} failed with {res.status_code}: {res.text}"
+        data = res.json()
+        assert "pagination" in data
+        assert data["pagination"]["total_records"] > 0
+
