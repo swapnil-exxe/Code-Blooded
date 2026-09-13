@@ -14,21 +14,29 @@ def _sanitize_db_url(raw_url: str) -> str:
     if not raw_url or "sqlite" in raw_url:
         return raw_url
     raw_url = raw_url.replace("postgres://", "postgresql://").replace("?pgbouncer=true", "")
-    if "db.fcpwrmzviqrhsdgelwmk.supabase.co" in raw_url:
-        raw_url = raw_url.replace("db.fcpwrmzviqrhsdgelwmk.supabase.co:5432", "aws-0-ap-south-1.pooler.supabase.com:6543")
-        raw_url = raw_url.replace("db.fcpwrmzviqrhsdgelwmk.supabase.co", "aws-0-ap-south-1.pooler.supabase.com:6543")
-        if "postgres:" in raw_url and "postgres.fcpwrmzviqrhsdgelwmk:" not in raw_url:
-            raw_url = raw_url.replace("postgres:", "postgres.fcpwrmzviqrhsdgelwmk:", 1)
-    if raw_url.count("@") > 1:
-        try:
-            prefix, rest = raw_url.rsplit("@", 1)
-            scheme, user_pass = prefix.split("://", 1)
+    if "://" not in raw_url or "@" not in raw_url:
+        return raw_url
+
+    try:
+        scheme, remainder = raw_url.split("://", 1)
+        user_pass, host_port_db = remainder.rsplit("@", 1)
+
+        if ":" in user_pass:
             user, password = user_pass.split(":", 1)
-            encoded_pass = urllib.parse.quote(password, safe="")
-            return f"{scheme}://{user}:{encoded_pass}@{rest}"
-        except Exception:
-            return raw_url
-    return raw_url
+        else:
+            user, password = user_pass, ""
+
+        unquoted_pass = urllib.parse.unquote(password)
+        quoted_pass = urllib.parse.quote(unquoted_pass, safe="")
+
+        if "db.fcpwrmzviqrhsdgelwmk.supabase.co" in host_port_db or "aws-0-ap-south-1.pooler.supabase.com" in host_port_db:
+            host_port_db = "aws-0-ap-south-1.pooler.supabase.com:6543/" + host_port_db.split("/", 1)[-1]
+            if user == "postgres":
+                user = "postgres.fcpwrmzviqrhsdgelwmk"
+
+        return f"{scheme}://{user}:{quoted_pass}@{host_port_db}"
+    except Exception:
+        return raw_url
 
 def get_db_url() -> str:
     """Retrieves Database URL from environment or constructs from parts, falling back to live Supabase PostgreSQL."""
