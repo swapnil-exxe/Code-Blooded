@@ -3,7 +3,11 @@ import subprocess
 import json
 import logging
 from typing import Dict, Any, Optional
-from scrapling import Fetcher
+try:
+    from scrapling import Fetcher
+except ImportError:
+    Fetcher = None
+
 from scraper.config import scraper_settings
 
 logger = logging.getLogger("scraper.client")
@@ -17,7 +21,7 @@ class ResilientScraperClient:
 
     def __init__(self):
         try:
-            self.fetcher = Fetcher()
+            self.fetcher = Fetcher() if Fetcher is not None else None
         except Exception:
             self.fetcher = None
 
