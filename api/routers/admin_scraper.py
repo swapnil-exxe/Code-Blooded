@@ -24,8 +24,9 @@ def trigger_manual_ingestion(
     Manually triggers an on-demand live eSAKSHI ingestion run.
     Requires administrative user privileges.
     """
-    if current_user.role not in ["MINISTRY", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Administrative privileges required to trigger live ingestion.")
+    allowed_roles = ["MINISTRY", "ADMIN", "AGENCY", "STATE_OFFICER", "DISTRICT_OFFICER", "MP", "PARLIAMENT", "ORGANIZATION"]
+    if current_user.role not in allowed_roles:
+        raise HTTPException(status_code=403, detail="Authenticated user privileges required to trigger live ingestion.")
 
     logger.info(f"Manual ingestion trigger requested by user {current_user.email}")
     

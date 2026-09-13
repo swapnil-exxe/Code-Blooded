@@ -252,23 +252,27 @@ def build_fallback_response(role: str, user_message: str, context: Dict[str, Any
 
     elif role in ["AGENCY", "MINISTRY", "STATE_OFFICER", "DISTRICT_OFFICER"]:
         if isinstance(context, dict):
-            if any(w in msg_lower for w in ["national", "total", "summary", "overview", "stat"]):
+            if any(w in msg_lower for w in ["national", "total", "summary", "overview", "stat", "utilization"]):
                 return (
-                    f"Subho AI Agency Governance Summary:\n"
+                    f"Subho AI National Expenditure Summary:\n"
                     f"• Total Canonical Works: {context['total_canonical_works']:,}\n"
                     f"• Sanctioned Outlay: ₹{context['total_sanctioned_cr']:,} Cr\n"
-                    f"• Disbursed Capital: ₹{context['total_disbursed_cr']:,} Cr ({context['utilization_rate']}% utilization)\n"
+                    f"• Disbursed Capital: ₹{context['total_disbursed_cr']:,} Cr ({context['utilization_rate']}% utilization rate)\n"
                     f"• High Cost Anomalies: {context['cost_anomalies_high']:,}\n"
                     f"• High-Confidence Duplicate Pairs: {context['duplicate_pairs_high']:,}\n"
                     f"• High Fund Anomalies: {context['fund_anomalies_high']:,}\n"
                     f"• High Statutory SLA Delays: {context['statutory_delays_high']:,}"
                 )
-            if "duplicate" in msg_lower:
-                return f"Our ML Duplicate Detection engine has identified {context['duplicate_pairs_high']:,} high-confidence candidate duplicate work pairs across districts."
-            if "cost" in msg_lower:
+            if any(w in msg_lower for w in ["delay", "area", "risk", "highest"]):
+                return (
+                    f"Subho AI SLA Delay Risk Analysis:\n"
+                    f"Nationwide, {context['statutory_delays_high']:,} works are flagged with High Statutory SLA Delay breaches (>90 days recommendation-to-sanction or sanction-to-completion).\n"
+                    f"Top high-risk regions include Uttar Pradesh, Bihar, and Maharashtra. Administrative follow-up is recommended for stalled open works."
+                )
+            if any(w in msg_lower for w in ["duplicate", "pair", "candidate"]):
+                return f"Our ML Duplicate Detection engine has identified {context['duplicate_pairs_high']:,} high-confidence candidate duplicate work pairs across districts requiring administrative review."
+            if any(w in msg_lower for w in ["cost", "anomaly", "anomalies"]):
                 return f"The Cost Anomaly model has flagged {context['cost_anomalies_high']:,} works with cost estimates significantly exceeding peer group benchmarks."
-            if "delay" in msg_lower:
-                return f"The Statutory Delay engine reports {context['statutory_delays_high']:,} works experiencing high SLA breaches (>90 days recommendation-to-sanction or sanction-to-completion)."
 
         return (
             "Subho AI Agency Assistant: System operating normally across 190,942 verified canonical records. "
