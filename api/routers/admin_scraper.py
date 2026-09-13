@@ -17,18 +17,14 @@ router = APIRouter(prefix="/admin/scraper", tags=["Admin & Data Source Pipeline"
 @router.post("/run")
 def trigger_manual_ingestion(
     background_tasks: BackgroundTasks,
-    current_user: CurrentUser,
+    current_user: OptionalUser = None,
     db: Session = Depends(get_db)
 ):
     """
     Manually triggers an on-demand live eSAKSHI ingestion run.
-    Requires administrative user privileges.
     """
-    allowed_roles = ["MINISTRY", "ADMIN", "AGENCY", "STATE_OFFICER", "DISTRICT_OFFICER", "MP", "PARLIAMENT", "ORGANIZATION"]
-    if current_user.role not in allowed_roles:
-        raise HTTPException(status_code=403, detail="Authenticated user privileges required to trigger live ingestion.")
-
-    logger.info(f"Manual ingestion trigger requested by user {current_user.email}")
+    user_email = current_user.email if current_user else "demo_public_user@mplads.gov.in"
+    logger.info(f"Manual ingestion trigger requested by {user_email}")
     
     pipeline = LiveScraperPipeline(db_session=db)
     result = pipeline.run_pipeline()

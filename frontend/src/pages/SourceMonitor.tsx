@@ -20,7 +20,7 @@ export const SourceMonitor: React.FC = () => {
   const [statusData, setStatusData] = useState<ScraperStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const loadStatus = async () => {
     setLoading(true);
@@ -43,10 +43,16 @@ export const SourceMonitor: React.FC = () => {
     setMsg(null);
     try {
       const res = await scraperService.triggerRun();
-      setMsg(`Live ingestion completed successfully! Run ID: ${res.details?.run_id || 'Completed'}`);
+      setMsg({
+        text: `Live ingestion completed successfully! Run ID: ${res.details?.run_id || 'Completed'}`,
+        type: 'success',
+      });
       await loadStatus();
     } catch (err: any) {
-      setMsg(`Ingestion run finished: ${err.message || 'Updated'}`);
+      setMsg({
+        text: `Ingestion run failed: ${err.response?.data?.detail || err.message || 'Error triggering ingestion'}`,
+        type: 'error',
+      });
       await loadStatus();
     } finally {
       setRunning(false);
@@ -87,9 +93,19 @@ export const SourceMonitor: React.FC = () => {
       </div>
 
       {msg && (
-        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold flex items-center gap-2 shadow-xs">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>{msg}</span>
+        <div
+          className={`p-4 rounded-xl border text-xs font-semibold flex items-center gap-2 shadow-xs ${
+            msg.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+              : 'bg-rose-50 border-rose-200 text-rose-900'
+          }`}
+        >
+          {msg.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          ) : (
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+          )}
+          <span>{msg.text}</span>
         </div>
       )}
 
