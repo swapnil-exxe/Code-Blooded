@@ -1,6 +1,6 @@
 """
 Idempotent Bulk Ingestion Pipeline for Phase 6.1 — Database & Data Ingestion
-AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)
+AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)
 Supports PostgreSQL / Supabase
 """
 
@@ -461,7 +461,7 @@ def write_validation_report(stats: dict, output_path: str = "data/reports/phase6
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     report = f"""# Phase 6.1: Database & Data Ingestion Validation Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Database**: PostgreSQL 17.6 on Supabase (`ap-northeast-1`)  
 **Phase**: Phase 6.1 — Database Setup & Reliable Data Ingestion  
 **Date**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  

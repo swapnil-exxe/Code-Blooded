@@ -1,7 +1,7 @@
 # MPLADS AI Command Center — Master Project Technical Knowledge Base & Viva Reference
 
 > **System**: AI-Powered MPLADS Analytics & Governance Platform  
-> **Problem Statement**: SIH 2026 — PS ID 26102 (MoSPI)  
+> **Problem Statement**: MPLADS Governance & Analytics Platform  
 > **Dataset Scope**: 190,942 Master Works | 109,311 Expenditure Vouchers | ₹10,211.49 Cr Sanctioned Outlay | 773 Districts | 36 States  
 > **Validation**: 117/117 Automated Tests Passing (100% Pass Rate) | 0 Critical Vulnerabilities  
 
@@ -650,7 +650,7 @@ erDiagram
 ## One-Page Project Master Reference
 
 - **Project Name**: MPLADS AI Command Center (Governance & Analytics Platform)
-- **Problem Statement ID**: SIH 2026 — PS 26102 (MoSPI)
+- **Platform Requirement**: MPLADS Governance & Analytics Platform (MoSPI)
 - **Core Scope**: 190,942 Master Works | 109,311 Expenditure Vouchers | ₹10,211.49 Cr Sanctioned | 773 Districts | 36 States
 - **Stack**: React 18 SPA + Vite + Tailwind | FastAPI + Async Uvicorn | Supabase PostgreSQL 17.6 | PyArrow & Apache Parquet
 - **4 Models**:

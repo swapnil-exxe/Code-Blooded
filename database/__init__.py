@@ -1,5 +1,5 @@
 """
-Database Layer Package for MPLADS Monitoring Platform (SIH PS 26102)
+Database Layer Package for MPLADS Monitoring Platform (MPLADS PS 190942)
 Supports PostgreSQL / Supabase
 """
 

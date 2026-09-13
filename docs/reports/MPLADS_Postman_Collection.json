@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "MPLADS AI Platform API",
-    "description": "REST API collection for SIH PS 26102: Authentication, RBAC, System, Metadata, Works Registry, Analytics, and Automated Tests.",
+    "description": "REST API collection for MPLADS PS 190942: Authentication, RBAC, System, Metadata, Works Registry, Analytics, and Automated Tests.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [

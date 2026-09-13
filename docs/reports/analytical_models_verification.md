@@ -1,9 +1,9 @@
 # Analytical Models Verification & Architecture Audit Report
 
 **Project**: AI-Powered MPLADS Monitoring and Analytics Platform  
-**Smart India Hackathon Problem Statement**: SIH PS 26102 (*Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation*)  
+**MPLADS Analytics Problem Statement**: MPLADS PS 190942 (*Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation*)  
 **Scope**: Comprehensive Technical Audit, Mathematical Formulation, Feature Lineage, Empirical Validation, and Viva Defense Guide for all Four Analytical Modules  
-**Audited Codebase Directory**: `C:\Users\zaid\Desktop\CodeBlooded`  
+**Audited Codebase Directory**: `C:\Users\zaid\Desktop\MPLADS_Analytics`  
 **Test Suite Verification**: **25 / 25 Pytest Unit Tests PASSED** (Execution time: 60.14s, 0 failures, 0 regressions)  
 **Composite Risk Score Verification**: **ZERO Composite Risk Score** (Verified across 100% of codebase, schemas, routers, and frontend)
 
@@ -19,8 +19,8 @@
 6. [Module 3: Fund & Expenditure Anomaly Detector](#6-module-3-fund--expenditure-anomaly-detector)
 7. [Module 4: Statutory Delay Detector](#7-module-4-statutory-delay-detector)
 8. [Model Training, Generalization & Evaluation Audit](#8-model-training-generalization--evaluation-audit)
-9. [SIH Viva Defense Playbook & Evaluator Q&A](#9-sih-viva-defense-playbook--evaluator-qa)
-10. [SIH Presentation Executive Summary](#10-sih-presentation-executive-summary)
+9. [MPLADS Viva Defense Playbook & Evaluator Q&A](#9-sih-viva-defense-playbook--evaluator-qa)
+10. [MPLADS Presentation Executive Summary](#10-sih-presentation-executive-summary)
 
 ---
 
@@ -55,7 +55,7 @@ A thorough audit of the entire codebase was conducted across all database models
 * Each analytical module executes its own pipeline, maintains its own data contract, calculates its own calibrated score, and writes to its own isolated database table.
 
 ### 2.2 Administrative & Public Policy Rationale
-During SIH evaluation and viva presentations, evaluators frequently ask: *"Why didn't you combine these into a single composite risk score for each work or district?"*
+During MPLADS evaluation and viva presentations, evaluators frequently ask: *"Why didn't you combine these into a single composite risk score for each work or district?"*
 
 The system intentionally avoids a composite score for four critical public administration and legal reasons:
 1. **Preserving Distinct Administrative Actionability**:
@@ -635,7 +635,7 @@ Since traditional supervised accuracy/F1 cannot be calculated without ground tru
 
 ### 8.2 Formal Model Categorization
 
-To maintain complete scientific and professional integrity during SIH judging, each analytical module is formally classified into the standard AI engineering taxonomy:
+To maintain complete scientific and professional integrity during MPLADS judging, each analytical module is formally classified into the standard AI engineering taxonomy:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -659,7 +659,7 @@ To maintain complete scientific and professional integrity during SIH judging, e
 
 ---
 
-## 9. SIH Viva Defense Playbook & Evaluator Q&A
+## 9. MPLADS Viva Defense Playbook & Evaluator Q&A
 
 This playbook provides exact answers for the development team during hackathon presentations and viva examinations:
 
@@ -703,11 +703,11 @@ This playbook provides exact answers for the development team during hackathon p
 
 ---
 
-## 10. SIH Presentation Executive Summary
+## 10. MPLADS Presentation Executive Summary
 
 ```
 ========================================================================================
-             MPLADS AI-POWERED MONITORING PLATFORM (SIH PS 26102)
+             MPLADS AI-POWERED MONITORING PLATFORM (MPLADS PS 190942)
                      ANALYTICAL SUITE AUDIT SUMMARY
 ========================================================================================
 ```

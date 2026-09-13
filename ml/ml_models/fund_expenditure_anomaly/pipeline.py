@@ -80,7 +80,7 @@ def _write_report(report_path, metrics):
     report_path.parent.mkdir(parents=True, exist_ok=True)
     md = f"""# Model 3: Fund & Expenditure Anomaly Detector Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Phase**: Phase 4.3 — Model 3 (Fund & Expenditure Anomaly)  
 **Date**: {metrics['timestamp'][:10]}  
 **Status**: `MODEL 3 COMPLETE`  

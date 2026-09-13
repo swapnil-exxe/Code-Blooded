@@ -658,7 +658,7 @@ write_doc("19_HACKATHON_JUDGE_QA.md", "19. Hackathon & Evaluator Q&A", doc19_con
 doc20_content = r"""## One-Page Project Master Reference
 
 - **Project Name**: MPLADS AI Command Center (Governance & Analytics Platform)
-- **Problem Statement ID**: SIH 2026 — PS 26102 (MoSPI)
+- **Platform Requirement**: MPLADS Governance & Analytics Platform (MoSPI)
 - **Core Scope**: 190,942 Master Works | 109,311 Expenditure Vouchers | ₹10,211.49 Cr Sanctioned | 773 Districts | 36 States
 - **Stack**: React 18 SPA + Vite + Tailwind | FastAPI + Async Uvicorn | Supabase PostgreSQL 17.6 | PyArrow & Apache Parquet
 - **4 Models**:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Pydantic Schemas for Trend & Aggregate Analytics and Early Warning Mechanisms
-SIH Problem Statement: SIH PS 26102
+MPLADS Problem Statement: MPLADS PS 190942
 """
 
 from typing import List, Optional, Dict, Any

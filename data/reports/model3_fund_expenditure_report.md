@@ -1,6 +1,6 @@
 # Model 3: Fund & Expenditure Anomaly Detector Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Phase**: Phase 4.3 — Model 3 (Fund & Expenditure Anomaly)  
 **Date**: 2026-09-13  
 **Status**: `MODEL 3 COMPLETE`  

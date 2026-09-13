@@ -1,6 +1,6 @@
 # Frontend UI/UX Redesign & Visual Improvement Plan
 ## AI-Powered MPLADS Monitoring & Decision-Support System
-### Smart India Hackathon (SIH) 2026 — Problem Statement PS 26102
+### MPLADS Analytics 2026 — Problem Statement PS 190942
 
 **Document Version:** 1.0.0  
 **Target Milestone:** Comprehensive Frontend Visual Polish & Decision-Support Re-architecture  
@@ -32,7 +32,7 @@ Based on a thorough inspection of the running frontend and the three user-provid
 
 ### 1.3 Role Switcher (`media_1788962456768.png`)
 * **Generic Dropdown Styling**: Appears as an off-the-shelf white box with default hover effects and user icons.
-* **Unclear Demonstrative Purpose**: It does not visually convey its purpose as an official **"Stakeholder Perspective Simulation"** for SIH evaluators.
+* **Unclear Demonstrative Purpose**: It does not visually convey its purpose as an official **"Stakeholder Perspective Simulation"** for MPLADS evaluators.
 
 ### 1.4 Global Shell & Sidebar
 * **Stark Contrast & Heavy Darkness**: The sidebar is jet black (`bg-slate-900`) while the main content area is bright white (`bg-slate-50`). This stark dichotomy looks unintegrated.
@@ -186,7 +186,7 @@ Instead of 8 redundant cards, create 4 distinct, high-impact **Investigative Tri
      - Model 3: Amber (Funds)
      - Model 4: Blue (Delays)
 4. **Institutional Footer**:
-   - Clean attribution: *Smart India Hackathon 2026 • Team Code Blooded*.
+   - Clean attribution: *MPLADS Analytics 2026 • Team MPLADS Core Analytics Team*.
    - Security verification: *Zero Composite Score • Server-Side RBAC Enforced*.
 
 ---

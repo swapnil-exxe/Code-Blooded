@@ -1,5 +1,5 @@
 # Ministry Dashboard & Navigation UX Redesign Plan
-## PS 26102 — AI-Powered MPLADS Monitoring & Anomaly Detection System
+## PS 190942 — AI-Powered MPLADS Monitoring & Anomaly Detection System
 
 **Document Version:** 2.0  
 **Scope:** Frontend presentation layer only — zero backend/API/database changes  
@@ -7,11 +7,11 @@
 
 ---
 
-## 1. PS 26102 vs. Current Implementation — Honest Gap Analysis
+## 1. PS 190942 vs. Current Implementation — Honest Gap Analysis
 
 Before making any design changes, here is an honest mapping of what the PS asks for against what our system actually provides.
 
-| PS 26102 Requirement | What We Actually Have | Dashboard Treatment |
+| PS 190942 Requirement | What We Actually Have | Dashboard Treatment |
 | :--- | :--- | :--- |
 | **Detect anomalies in cost estimates** | ✅ Model 1: Isolation Forest + Peer-Group IQR | Surface HIGH count on dashboard, link to full investigation page |
 | **Detect duplicate works** | ✅ Model 2: MiniLM Semantic Embeddings + Multi-Attribute Blocking | Surface HIGH count on dashboard, link to pair comparison page |
@@ -31,7 +31,7 @@ Before making any design changes, here is an honest mapping of what the PS asks 
 
 ## 2. Current Ministry Dashboard — Problems Identified
 
-Based on inspection of [Dashboard.tsx](file:///c:/Users/zaid/Desktop/CodeBlooded/frontend/src/pages/Dashboard.tsx) and the current screenshot:
+Based on inspection of [Dashboard.tsx](file:///c:/Users/zaid/Desktop/MPLADS_Analytics/frontend/src/pages/Dashboard.tsx) and the current screenshot:
 
 ### 2.1 Information Architecture Problems
 
@@ -51,14 +51,14 @@ Based on inspection of [Dashboard.tsx](file:///c:/Users/zaid/Desktop/CodeBlooded
 | :--: | :--- | :--- |
 | 8 | **Dark sidebar vs. light content**: Jet-black bg-slate-900 sidebar creates harsh contrast | Looks unintegrated; not institutional |
 | 9 | **"MP" gold badge**: Looks like a gaming clan icon, not a government portal | Lacks institutional gravitas |
-| 10 | **Generic role switcher**: Plain dropdown with "Switch Role" label | Doesn't communicate purpose to SIH evaluators |
+| 10 | **Generic role switcher**: Plain dropdown with "Switch Role" label | Doesn't communicate purpose to MPLADS evaluators |
 | 11 | **Card border fatigue**: Every element wrapped in rounded-xl border shadow-sm | Visual noise; no clear hierarchy |
 
 ---
 
 ## 3. Recommended Dashboard Structure — Ministry View
 
-The redesigned Ministry Dashboard follows a **5-section information architecture** aligned with PS 26102's three Ministry needs: national oversight, compliance monitoring, and trend awareness.
+The redesigned Ministry Dashboard follows a **5-section information architecture** aligned with PS 190942's three Ministry needs: national oversight, compliance monitoring, and trend awareness.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -216,7 +216,7 @@ ADMINISTRATION  [Ministry only]
 | Logo/badge | Gold "MP" squircle | Clean text wordmark: "MPLADS" with "AI Monitor" subtitle |
 | Active state | Light background highlight | Left border accent (border-l-3 border-blue-500) + subtle bg tint |
 | Model indicators | Color circles (rose, indigo, amber, blue) | Keep — works well for quick visual identification |
-| Footer | "Team Code Blooded" + "Zero Composite Risk" | Keep attribution; refine typography |
+| Footer | "Team MPLADS Core Analytics Team" + "Zero Composite Risk" | Keep attribution; refine typography |
 
 ---
 
@@ -233,7 +233,7 @@ ADMINISTRATION  [Ministry only]
 | :--- | :--- | :--- |
 | Scope badge | Keep as-is — already well-designed per role | Works correctly |
 | Health indicator | Keep; optionally show DB latency in ms on hover | Already functional |
-| Role switcher label | Rename "Switch Role" → "Simulate Perspective" | Communicates purpose for SIH evaluators |
+| Role switcher label | Rename "Switch Role" → "Simulate Perspective" | Communicates purpose for MPLADS evaluators |
 | Role switcher dropdown | Add jurisdiction scope text per role option | Evaluators see what each role can access |
 | User profile | Keep; refine typography | Minor visual polish |
 
@@ -282,7 +282,7 @@ ADMINISTRATION  [Ministry only]
 
 ---
 
-## 9. PS 26102 Coverage Summary
+## 9. PS 190942 Coverage Summary
 
 ### ✅ Fully Covered by Redesign
 - Anomaly detection across 4 dimensions (cost, duplicates, fund, delays)

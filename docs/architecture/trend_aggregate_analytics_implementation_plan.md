@@ -1,7 +1,7 @@
 # Trend & Aggregate Analytics Implementation Plan (Refined & Empirically Validated)
 
 **Project**: AI-Powered MPLADS Monitoring and Analytics Platform  
-**Smart India Hackathon Problem Statement**: SIH PS 26102 (*Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation*)  
+**MPLADS Analytics Problem Statement**: MPLADS PS 190942 (*Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation*)  
 **Scope**: Rigorously Validated Implementation Blueprint for Higher-Level Trend Analysis, Aggregate Governance Metrics, and Defensible Early-Warning Mechanisms  
 **Status**: DRAFT FOR USER APPROVAL (Planning Mode — No implementation code written)
 
@@ -105,10 +105,14 @@ Every threshold, baseline, and smoothing formula in this plan has been directly 
     - 90th percentile: **255 days**.
   - *Critical Insight*: **75% of normal projects receive their first disbursement within 162 days.**
 * **Empirical Data Distribution of Zero-Disbursement Works ($N = 26,897$)**:
-  - Age $< 90$ days: 10,211 works (38.0%) $ightarrow$ Normal initial tendering.
-  - Age 90–180 days: 4,147 works (15.4%) $ightarrow$ Extended vendor identification.
-  - **Age 180–365 days**: **8,106 works (30.1%)** $ightarrow$ **Past the 75th percentile of normal disbursement; halfway through allowable project lifespan with zero financial progress.**
-  - Age $> 365$ days: 4,433 works (16.5%) $ightarrow$ Already full `DORMANT_SANCTION` violations.
+  - Age $< 90$ days: 10,211 works (38.0%) $
+ightarrow$ Normal initial tendering.
+  - Age 90–180 days: 4,147 works (15.4%) $
+ightarrow$ Extended vendor identification.
+  - **Age 180–365 days**: **8,106 works (30.1%)** $
+ightarrow$ **Past the 75th percentile of normal disbursement; halfway through allowable project lifespan with zero financial progress.**
+  - Age $> 365$ days: 4,433 works (16.5%) $
+ightarrow$ Already full `DORMANT_SANCTION` violations.
 * **Validated Classification & Grounding**:
   - This is a **STATISTICAL + OPERATIONAL EARLY-WARNING INDICATOR**:
     - Statistically grounded because reaching 180 days without spend puts a project beyond the 75th percentile of normal disbursement latency.
@@ -395,17 +399,27 @@ Automated pytest tests will assert mathematical invariants and operational contr
 3. **Bounded Rates**:
    $$0.0 \le 	ext{rate} \le 1.0 \quad orall 	ext{ entities and periods}$$
 4. **Credibility Tier Boundary Tests**:
-   - $N=9 ightarrow$ `INSUFFICIENT`
-   - $N=19 ightarrow$ `LOW_VOLUME`
-   - $N=35 ightarrow$ `MODERATE`
-   - $N=60 ightarrow$ `ROBUST`
+   - $N=9 
+ightarrow$ `INSUFFICIENT`
+   - $N=19 
+ightarrow$ `LOW_VOLUME`
+   - $N=35 
+ightarrow$ `MODERATE`
+   - $N=60 
+ightarrow$ `ROBUST`
 5. **Early Warning Boundary Assertions**:
-   - $44 	ext{ days} ightarrow$ Not in SLA cliff.
-   - $45 	ext{ to } 74 	ext{ days} ightarrow$ Included in `SLA_SANCTION_CLIFF`.
-   - $75 	ext{ days} ightarrow$ Statutory breach (excluded from pre-breach, routed to delay results).
-   - $179 	ext{ days} ightarrow$ Not in stagnation incubation.
-   - $180 	ext{ to } 365 	ext{ days with } ₹0 	ext{ spend} ightarrow$ Included in `STAGNATION_INCUBATION`.
-   - $> 365 	ext{ days} ightarrow$ Statutory dormancy (Model 3 violation).
+   - $44 	ext{ days} 
+ightarrow$ Not in SLA cliff.
+   - $45 	ext{ to } 74 	ext{ days} 
+ightarrow$ Included in `SLA_SANCTION_CLIFF`.
+   - $75 	ext{ days} 
+ightarrow$ Statutory breach (excluded from pre-breach, routed to delay results).
+   - $179 	ext{ days} 
+ightarrow$ Not in stagnation incubation.
+   - $180 	ext{ to } 365 	ext{ days with } ₹0 	ext{ spend} 
+ightarrow$ Included in `STAGNATION_INCUBATION`.
+   - $> 365 	ext{ days} 
+ightarrow$ Statutory dormancy (Model 3 violation).
 
 ---
 

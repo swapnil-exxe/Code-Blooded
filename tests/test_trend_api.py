@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Automated Verification Suite for Trend & Aggregate API Endpoints
-SIH Problem Statement: SIH PS 26102
+MPLADS Problem Statement: MPLADS PS 190942
 """
 
 import pytest

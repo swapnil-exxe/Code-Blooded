@@ -1,7 +1,7 @@
 # AI-Powered MPLADS Monitoring and Analytics Platform
-### Smart India Hackathon (SIH) 2026 — Problem Statement ID: 26102
-**Team**: Code Blooded  
-**Repository**: `Zaid5671/CodeBlooded`  
+### MPLADS AI Command Center — Governance & Analytics Platform
+**Team**: MPLADS Core Analytics Team  
+**Repository**: `MPLADS-AI-Command-Center`  
 **Current Phase**: Phase 6.3 Complete (Authentication, RBAC & Backend Security Verified)  
 **Overall Validation Status**: **85/85 Passing Tests (100% Pass Rate)**
 
@@ -9,7 +9,7 @@
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
-2. [Problem Statement (PS 26102)](#2-problem-statement-ps-26102)
+2. [Problem Statement (PS 190942)](#2-problem-statement-ps-190942)
 3. [Complete System Architecture](#3-complete-system-architecture)
 4. [Data Pipeline & Ingestion](#4-data-pipeline--ingestion)
 5. [Analytical & AI Components (The 4 Models)](#5-analytical--ai-components-the-4-models)
@@ -90,17 +90,17 @@ Isolation Forest    MiniLM-L6-v2 + Sim  Isolation Forest    Rule Engine
 
 ---
 
-## 2. Problem Statement (PS 26102)
+## 2. Problem Statement (PS 190942)
 
 ### Official Problem Statement Description
-> **Problem Statement ID**: 26102  
+> **Platform Requirement**: 190942  
 > **Title**: Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation regd.  
 > **Organization**: Ministry of Statistics and Programme Implementation (MoSPI) / Government of India  
 > **Core Mandate**: Develop an AI-powered monitoring and analytics platform that leverages Machine Learning (ML), Artificial Intelligence (AI), and advanced data analytics to identify trends, anomalies, irregularities, and potential fraud in fund utilization and project execution. The solution should analyze data relating to sanctions, expenditures, cost estimates, work progress, payments, and asset creation to detect unusual patterns, cost overruns, duplicate works, delayed projects, and deviations from established norms. The system should generate risk-based alerts, predictive insights, and decision-support dashboards for MPs, State Authorities, District Authorities, and the Ministry.
 
 ### Explicit Requirements vs. Engineering Implementation Choices
 
-| Dimension | Explicitly Mandated by PS 26102 | Our Engineering Implementation Choice |
+| Dimension | Explicitly Mandated by PS 190942 | Our Engineering Implementation Choice |
 |---|---|---|
 | **Anomaly Detection Domains** | Cost estimates, duplicate works, fund utilization, project delays. | Divided into **4 strictly independent analytical modules** with zero cross-model score averaging. |
 | **Cost Analysis** | Detect unusual patterns and cost overruns. | Unsupervised **Hierarchical Peer-Grouped Isolation Forest** (State $\to$ National fallback) evaluated strictly at sanction time with **zero post-sanction leakage**. |
@@ -557,7 +557,7 @@ The platform features a test suite of **85 automated tests** across 9 dedicated 
 ## 17. Project Directory Structure
 
 ```
-CodeBlooded/
+MPLADS_Analytics/
 ├── .env                              # Environment variables (Database URL, JWT secret)
 ├── .env.example                      # Production environment template
 ├── .gitignore                        # Git exclusion rules
@@ -565,7 +565,7 @@ CodeBlooded/
 ├── PROJECT_README.md                 # Complete platform documentation (This file)
 ├── README.md                         # Repository index
 ├── requirements.txt                  # Locked Python dependencies
-├── SIH2026PS_102                     # Official SIH Problem Statement text
+├── MPLADS Governance PlatformPS_102                     # Official MPLADS Problem Statement text
 │
 ├── api/                              # Production FastAPI Backend Package
 │   ├── __init__.py

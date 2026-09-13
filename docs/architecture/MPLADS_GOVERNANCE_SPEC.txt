@@ -1,5 +1,4 @@
-Problem Statement ID	
-26102
+MPLADS Analytics Platform
 Problem Statement Title	
 Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation regd.
 Description	

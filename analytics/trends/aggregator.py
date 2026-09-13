@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Analytical Rollup Engine for Trend & Aggregate Analytics
-SIH Problem Statement: SIH PS 26102
+MPLADS Problem Statement: MPLADS PS 190942
 
 Implements deterministic multi-tiered aggregation across National, State, District,
 and MP entities over Quarterly and Fiscal Year timelines.

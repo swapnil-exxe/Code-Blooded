@@ -1,7 +1,7 @@
 # Software Requirements Specification (SRS)
 ## AI-Powered MPLADS Monitoring & Anomaly Detection System
-### Smart India Hackathon (SIH) 2026 — Problem Statement PS 26102
-**Team:** Code Blooded  
+### MPLADS Analytics 2026 — Problem Statement PS 190942
+**Team:** MPLADS Core Analytics Team  
 **Standard:** IEEE Std 830-1998 / ISO/IEC/IEEE 29148:2018 Compliant  
 **Version:** 1.0.0  
 **Date:** September 2026  
@@ -13,7 +13,7 @@
 
 | Version | Date | Description | Author | Approved By |
 | :--- | :--- | :--- | :--- | :--- |
-| **1.0.0** | 09-09-2026 | Initial baseline SRS reflecting the implemented production system (FastAPI, PostgreSQL, React 19, 4 Independent Analytical Engines). | Team Code Blooded | Lead Architect |
+| **1.0.0** | 09-09-2026 | Initial baseline SRS reflecting the implemented production system (FastAPI, PostgreSQL, React 19, 4 Independent Analytical Engines). | Team MPLADS Core Analytics Team | Lead Architect |
 
 ---
 
@@ -83,7 +83,7 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-This Software Requirements Specification (SRS) establishes the complete, authoritative technical specification for the **AI-Powered MPLADS Monitoring & Anomaly Detection System**, engineered by Team **Code Blooded** for Smart India Hackathon (SIH) 2026 Problem Statement **PS 26102**.
+This Software Requirements Specification (SRS) establishes the complete, authoritative technical specification for the **AI-Powered MPLADS Monitoring & Anomaly Detection System**, engineered by Team **MPLADS Core Analytics Team** for MPLADS Analytics 2026 Problem Statement **PS 190942**.
 
 This document describes the actual implemented production system. Every requirement, schema, API endpoint, machine learning model, rule engine, and user interface component documented herein has been verified against the production codebase and its test suite.
 
@@ -99,7 +99,7 @@ The system processes **98,825 official works** and **₹4,286+ Crore** in sancti
 The platform strictly isolates data access across four administrative tiers through server-side jurisdictional predicate injection, backed by an asynchronous FastAPI REST backend, a PostgreSQL relational database on Supabase, and a responsive React 19 / TypeScript single-page application.
 
 ### 1.3 Intended Audience & Reading Suggestions
-- **SIH 2026 Evaluation Committee & Technical Jury**: Focus on Sections 2, 3, 4, 5, 13, and 16 to evaluate compliance with PS 26102.
+- **MPLADS Governance Platform Evaluation Committee & Technical Jury**: Focus on Sections 2, 3, 4, 5, 13, and 16 to evaluate compliance with PS 190942.
 - **Government Administrative Authorities (MoSPI / District Collectors)**: Focus on Sections 2.4, 4, 5, and 10 to inspect user workflows, dashboards, and analytical defensibility.
 - **Software Engineers & DevOps**: Focus on Sections 3, 7, 8, 9, 11, and 12 for technical maintenance, deployment, and API integration.
 - **Data Scientists & Machine Learning Engineers**: Focus on Section 5 for mathematical formulation, feature engineering, and peer-group hierarchy.
@@ -123,7 +123,7 @@ The platform strictly isolates data access across four administrative tiers thro
 
 ### 1.5 References
 1. **MPLADS Guidelines 2023**, Ministry of Statistics and Programme Implementation, Government of India (Effective April 1, 2023).
-2. **SIH 2026 Problem Statement PS 26102**: *"Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation"*.
+2. **MPLADS Governance Platform Problem Statement PS 190942**: *"Development of an AI-powered system to detect anomalies, fraud, and inefficiencies in MPLAD Scheme implementation"*.
 3. **IEEE Std 830-1998**: *IEEE Recommended Practice for Software Requirements Specifications*.
 4. **RFC 7519**: *JSON Web Token (JWT) Architecture and Specifications*.
 5. **RFC 6749**: *The OAuth 2.0 Authorization Framework (Bearer Token Usage)*.
@@ -910,7 +910,7 @@ The backend exposes a standardized RESTful API under the prefix `/api/v1`.
 The user interface is engineered as a responsive, modern single-page application:
 1. **Authentication Page (`Login.tsx`)**:
    - Dual authentication modality: standard email/password input form + 1-click canonical demonstration switcher.
-   - Displays official MoSPI / SIH 2026 branding and security disclosures.
+   - Displays official MoSPI / MPLADS Governance Platform branding and security disclosures.
 2. **Global Shell Layout (`AppLayout.tsx`)**:
    - **Header**: Live API health pulse, active jurisdictional scope badge (`MINISTRY`, `STATE_OFFICER`, `DISTRICT_OFFICER`, `MP`), demo role switcher, and user logout action.
    - **Sidebar**: Two-tier navigation grouping:
@@ -1034,4 +1034,4 @@ All 18 functional requirements and security invariants have been empirically ver
    - Verified that `works` and `work_details` APIs contain independent objects for each model without synthetic combined risk formulas.
 
 ---
-*End of Software Requirements Specification — AI-Powered MPLADS Monitoring & Anomaly Detection System (SIH 2026 PS 26102)*
+*End of Software Requirements Specification — AI-Powered MPLADS Monitoring & Anomaly Detection System (MPLADS Governance Platform PS 190942)*

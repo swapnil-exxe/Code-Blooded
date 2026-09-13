@@ -9,7 +9,7 @@
 
 | Original Location | New Location | Subsystem / Purpose |
 | :--- | :--- | :--- |
-| `SIH2026PS_102` | `docs/architecture/SIH2026PS_102.txt` | Structured Documentation |
+| `MPLADS Governance PlatformPS_102` | `docs/architecture/MPLADS Governance PlatformPS_102.txt` | Structured Documentation |
 | `docs/SRS_MPLADS_AI_Monitoring_System.md` | `docs/architecture/SRS_MPLADS_AI_Monitoring_System.md` | Structured Documentation |
 | `docs/SRS_MPLADS_AI_Monitoring_System.pdf` | `docs/architecture/SRS_MPLADS_AI_Monitoring_System.pdf` | Structured Documentation |
 | `docs/frontend_ui_redesign_plan.md` | `docs/architecture/frontend_ui_redesign_plan.md` | Structured Documentation |
@@ -22,7 +22,7 @@
 | `CLEANUP_DELETED_FILES.md` | `docs/qa/CLEANUP_DELETED_FILES.md` | Structured Documentation |
 | `STORAGE_CLEANUP_REPORT.md` | `docs/qa/STORAGE_CLEANUP_REPORT.md` | Structured Documentation |
 | `EXTREME_QA_SECURITY.md` | `docs/security/EXTREME_QA_SECURITY.md` | Structured Documentation |
-| `docs/SIH26102_FULL_DATA_RECONCILIATION.md` | `docs/reports/SIH26102_FULL_DATA_RECONCILIATION.md` | Structured Documentation |
+| `docs/MPLADS_ANALYTICS_FULL_DATA_RECONCILIATION.md` | `docs/reports/MPLADS_ANALYTICS_FULL_DATA_RECONCILIATION.md` | Structured Documentation |
 | `docs/analytical_models_verification.md` | `docs/reports/analytical_models_verification.md` | Structured Documentation |
 | `docs/walkthrough_frontend_redesign.md` | `docs/reports/walkthrough_frontend_redesign.md` | Structured Documentation |
 | `MPLADS_Postman_Collection.json` | `docs/reports/MPLADS_Postman_Collection.json` | Structured Documentation |

@@ -1,6 +1,6 @@
 # Model 1 Peer Hierarchy & Region Verification Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Verification Target**: Model 1 (Anomalous Cost Estimate Detector) Peer Hierarchy & Region Field Availability  
 **Evaluation Date**: 2026-09-07  
 
@@ -110,7 +110,7 @@ py -3.12 -m pytest tests/test_model1_cost_anomaly.py -v
 ============================= test session starts =============================
 platform win32 -- Python 3.12.5, pytest-9.1.1, pluggy-1.6.0 -- C:\Program Files\Python312\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\zaid\Desktop\CodeBlooded
+rootdir: C:\Users\zaid\Desktop\MPLADS_Analytics
 collecting ... collected 6 items
 
 tests/test_model1_cost_anomaly.py::test_model1_input_schema_validation PASSED [ 16%]

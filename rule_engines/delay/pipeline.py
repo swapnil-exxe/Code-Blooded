@@ -84,7 +84,7 @@ def _write_report(report_path, metrics, config):
     report_path.parent.mkdir(parents=True, exist_ok=True)
     md = f"""# Phase 5: Delay Logic & SLA Rule Engine Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Phase**: Phase 5 — Delay Logic + Severity Logging  
 **Date**: {metrics['timestamp'][:10]}  
 **Status**: `PHASE 5 COMPLETE`  

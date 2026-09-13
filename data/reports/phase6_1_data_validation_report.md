@@ -1,6 +1,6 @@
 # Phase 6.1: Database & Data Ingestion Validation Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Database**: PostgreSQL 17.6 on Supabase (`ap-northeast-1`)  
 **Phase**: Phase 6.1 — Database Setup & Reliable Data Ingestion  
 **Date**: 2026-09-10 13:17:57  

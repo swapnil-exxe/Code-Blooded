@@ -147,7 +147,7 @@ def generate_markdown_report(
     
     report_md = f"""# Model 2: Duplicate Work Detection Report
 
-**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (SIH PS 26102)  
+**Project**: AI-Powered MPLADS Monitoring and Analytics Platform (MPLADS PS 190942)  
 **Phase**: Phase 4.2 — Model 2 (Duplicate Work Detection)  
 **Date**: 2026-09-07  
 **Model Version**: 1.0.0  

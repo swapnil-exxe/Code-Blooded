@@ -10,7 +10,7 @@ class Settings:
     API_V1_STR: str = "/api/v1"
     VERSION: str = "1.0.0"
     DESCRIPTION: str = (
-        "Production REST API for SIH PS 26102: Real-time tracking of anomalous "
+        "Production REST API for MPLADS PS 190942: Real-time tracking of anomalous "
         "cost estimates, duplicate works, fund expenditure anomalies, and SLA delays."
     )
     DEFAULT_PAGE_SIZE: int = 20

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rollup Pipeline for Trend & Aggregate Analytics
-SIH Problem Statement: SIH PS 26102
+MPLADS Problem Statement: MPLADS PS 190942
 
 Executes deterministic aggregations over all 98,825 canonical works and persists
 pre-computed parquet artifacts for sub-50ms API delivery.
