@@ -27,7 +27,19 @@ def login(request: Request, credentials: LoginRequest, db: Session = Depends(get
     Includes constant-time dummy verification to mitigate timing-based user enumeration.
     """
     clean_email = credentials.email.lower().strip()
-    user = db.query(User).filter(User.email == clean_email).first()
+    
+    # User-friendly alias mappings for quick demo login
+    alias_map = {
+        "admin": "ministry@mplads.gov.in",
+        "admin@mplads.gov.in": "ministry@mplads.gov.in",
+        "ministry": "ministry@mplads.gov.in",
+        "mp": "mp.khalsa@mplads.gov.in",
+        "khalsa": "mp.khalsa@mplads.gov.in",
+        "state": "state.up@mplads.gov.in",
+        "district": "district.patna@mplads.gov.in",
+    }
+    target_email = alias_map.get(clean_email, clean_email)
+    user = db.query(User).filter(User.email == target_email).first()
 
     if not user:
         # Mitigate timing attacks by running equalizing dummy bcrypt computation

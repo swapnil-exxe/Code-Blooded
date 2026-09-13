@@ -4,8 +4,8 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class LoginRequest(BaseModel):
-    """Schema for authenticating a user via email and password."""
-    email: EmailStr = Field(..., description="User login email address")
+    """Schema for authenticating a user via email/username and password."""
+    email: str = Field(..., description="User login email address or username alias")
     password: str = Field(..., description="Plaintext password")
 
 
