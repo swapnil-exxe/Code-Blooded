@@ -239,7 +239,7 @@ export const TrendHeader: React.FC<TrendHeaderProps> = ({
         <div className="ml-auto text-[11px] text-slate-400 flex items-center gap-2">
           <span>Active Scope:</span>
           <span className="px-2 py-0.5 rounded bg-blue-900/40 text-blue-300 font-mono font-medium border border-blue-800/60">
-            {activeGrain === 'NATIONAL' && 'Nationwide (98,825 Canonical Works)'}
+            {activeGrain === 'NATIONAL' && 'Nationwide (190,942 Canonical Works)'}
             {activeGrain === 'STATE' && `State: ${selectedState}`}
             {activeGrain === 'DISTRICT' && `District: ${selectedDistrict} (${selectedState})`}
             {activeGrain === 'MP' && `MP: ${selectedMP}`}

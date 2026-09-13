@@ -16,7 +16,7 @@ export const CANONICAL_DEMO_ACCOUNTS: DemoAccount[] = [
     label: 'Central Ministry (MoSPI)',
     email: 'ministry@mplads.gov.in',
     scope: 'All-India National Oversight',
-    description: 'Unrestricted oversight across all 36 States/UTs and 98,825 works',
+    description: 'Unrestricted oversight across all 36 States/UTs and 190,942 works',
   },
   {
     role: 'STATE_OFFICER',

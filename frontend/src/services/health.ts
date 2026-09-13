@@ -11,7 +11,7 @@ export const healthService = {
         status: 'healthy',
         database: 'sqlite_standalone_demo',
         db_latency_ms: 8,
-        total_works: 98825,
+        total_works: 190942,
         version: '1.0.0-standalone',
       };
     }
