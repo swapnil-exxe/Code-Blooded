@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export function getApiBaseUrl(): string {
-  let envUrl = (import.meta.env.VITE_API_BASE_URL || '/api/v1').trim();
+  let envUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1').trim();
   if (envUrl.endsWith('/')) {
     envUrl = envUrl.slice(0, -1);
   }
