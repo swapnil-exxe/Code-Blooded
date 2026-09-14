@@ -20,11 +20,11 @@ def apply_jurisdiction_scope(
     if not user or user.role == "MINISTRY":
         return query
 
-    if user.role == "STATE_OFFICER":
+    if user.role == "STATE_OFFICER" and user.assigned_state:
         state_attr = getattr(entity_class, state_col)
         return query.filter(state_attr == user.assigned_state)
 
-    if user.role == "DISTRICT_OFFICER":
+    if user.role == "DISTRICT_OFFICER" and user.assigned_state and user.assigned_district:
         state_attr = getattr(entity_class, state_col)
         district_attr = getattr(entity_class, district_col)
         return query.filter(
@@ -32,7 +32,7 @@ def apply_jurisdiction_scope(
             district_attr == user.assigned_district
         )
 
-    if user.role == "MP":
+    if user.role == "MP" and user.assigned_mp_name:
         mp_attr = getattr(entity_class, mp_col)
         return query.filter(mp_attr == user.assigned_mp_name)
 
@@ -52,18 +52,23 @@ def apply_work_joined_scope(
     if not user or user.role == "MINISTRY":
         return query, already_joined
 
-    if not already_joined:
-        query = query.join(Work, result_model_class.work_id == Work.work_id)
-        already_joined = True
-
-    if user.role == "STATE_OFFICER":
+    if user.role == "STATE_OFFICER" and user.assigned_state:
+        if not already_joined:
+            query = query.join(Work, result_model_class.work_id == Work.work_id)
+            already_joined = True
         query = query.filter(Work.state == user.assigned_state)
-    elif user.role == "DISTRICT_OFFICER":
+    elif user.role == "DISTRICT_OFFICER" and user.assigned_state and user.assigned_district:
+        if not already_joined:
+            query = query.join(Work, result_model_class.work_id == Work.work_id)
+            already_joined = True
         query = query.filter(
             Work.state == user.assigned_state,
             Work.district == user.assigned_district
         )
-    elif user.role == "MP":
+    elif user.role == "MP" and user.assigned_mp_name:
+        if not already_joined:
+            query = query.join(Work, result_model_class.work_id == Work.work_id)
+            already_joined = True
         query = query.filter(Work.mp_name == user.assigned_mp_name)
 
     return query, already_joined
@@ -79,16 +84,19 @@ def apply_duplicate_works_scope(query, user: User):
 
     w1 = aliased(Work)
     w2 = aliased(Work)
-    query = query.join(w1, DuplicateWorkResult.work_id_1 == w1.work_id).join(
-        w2, DuplicateWorkResult.work_id_2 == w2.work_id
-    )
 
-    if user.role == "STATE_OFFICER":
+    if user.role == "STATE_OFFICER" and user.assigned_state:
+        query = query.join(w1, DuplicateWorkResult.work_id_1 == w1.work_id).join(
+            w2, DuplicateWorkResult.work_id_2 == w2.work_id
+        )
         return query.filter(
             or_(w1.state == user.assigned_state, w2.state == user.assigned_state)
         )
 
-    if user.role == "DISTRICT_OFFICER":
+    if user.role == "DISTRICT_OFFICER" and user.assigned_state and user.assigned_district:
+        query = query.join(w1, DuplicateWorkResult.work_id_1 == w1.work_id).join(
+            w2, DuplicateWorkResult.work_id_2 == w2.work_id
+        )
         return query.filter(
             or_(
                 and_(w1.state == user.assigned_state, w1.district == user.assigned_district),
@@ -96,7 +104,10 @@ def apply_duplicate_works_scope(query, user: User):
             )
         )
 
-    if user.role == "MP":
+    if user.role == "MP" and user.assigned_mp_name:
+        query = query.join(w1, DuplicateWorkResult.work_id_1 == w1.work_id).join(
+            w2, DuplicateWorkResult.work_id_2 == w2.work_id
+        )
         return query.filter(
             or_(w1.mp_name == user.assigned_mp_name, w2.mp_name == user.assigned_mp_name)
         )
@@ -112,7 +123,7 @@ def verify_work_jurisdiction(work: Work, user: User) -> None:
     if not user or user.role == "MINISTRY":
         return
 
-    if user.role == "STATE_OFFICER":
+    if user.role == "STATE_OFFICER" and user.assigned_state:
         if work.state != user.assigned_state:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -122,7 +133,7 @@ def verify_work_jurisdiction(work: Work, user: User) -> None:
                 )
             )
 
-    elif user.role == "DISTRICT_OFFICER":
+    elif user.role == "DISTRICT_OFFICER" and user.assigned_state and user.assigned_district:
         if work.state != user.assigned_state or work.district != user.assigned_district:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -132,7 +143,7 @@ def verify_work_jurisdiction(work: Work, user: User) -> None:
                 )
             )
 
-    elif user.role == "MP":
+    elif user.role == "MP" and user.assigned_mp_name:
         if work.mp_name != user.assigned_mp_name:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

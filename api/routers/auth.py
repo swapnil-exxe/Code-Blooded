@@ -34,6 +34,8 @@ def login(request: Request, credentials: LoginRequest, db: Session = Depends(get
         "admin@mplads.gov.in": "ministry@mplads.gov.in",
         "ministry": "ministry@mplads.gov.in",
         "ministry@mplads.gov.in": "ministry@mplads.gov.in",
+        "swapnil": "swapnil15x@gmail.com",
+        "swapnil15x@gmail.com": "swapnil15x@gmail.com",
         "mp": "mp.khalsa@mplads.gov.in",
         "mp.khalsa@mplads.gov.in": "mp.khalsa@mplads.gov.in",
         "sarabjeet.khalsa@sansad.in": "mp.khalsa@mplads.gov.in",
