@@ -100,12 +100,14 @@ class TestScraperPipeline(unittest.TestCase):
         pass
 
     def test_13_existing_historical_records_preserved(self):
-        conn = sqlite3.connect("database/mplads_master.db")
-        c = conn.cursor()
-        c.execute("SELECT COUNT(*) FROM works;")
-        count = c.fetchone()[0]
-        conn.close()
-        self.assertGreaterEqual(count, 190000)
+        from database.connection import get_engine
+        from sqlalchemy import text
+        engine = get_engine()
+        with engine.connect() as conn:
+            count = conn.execute(text("SELECT COUNT(*) FROM works;")).scalar()
+            govt_count = conn.execute(text("SELECT COUNT(*) FROM works WHERE work_id LIKE 'GOVT_SUMMARY%';")).scalar()
+        self.assertGreaterEqual(count, 190942)
+        self.assertEqual(govt_count, 0)
 
     def test_14_source_snapshots_created(self):
         model, file_path = SnapshotManager.create_snapshot("https://test.com", {"test": True})

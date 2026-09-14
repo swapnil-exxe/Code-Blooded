@@ -2,7 +2,8 @@ import os
 import hashlib
 import json
 from datetime import datetime
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
+from sqlalchemy import text
 from scraper.config import scraper_settings
 from scraper.models import RawSnapshotModel
 
@@ -13,7 +14,7 @@ class SnapshotManager:
     """
 
     @staticmethod
-    def create_snapshot(source_url: str, raw_content: Any, http_status: int = 200) -> Tuple[RawSnapshotModel, str]:
+    def create_snapshot(source_url: str, raw_content: Any, http_status: int = 200, db: Optional[Any] = None) -> Tuple[RawSnapshotModel, str]:
         now = datetime.now()
         year = now.strftime("%Y")
         month = now.strftime("%m")
@@ -55,6 +56,25 @@ class SnapshotManager:
         meta_path = os.path.join(snapshot_dir, "metadata.json")
         with open(meta_path, "w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2)
+
+        if db is not None:
+            try:
+                db.execute(text("""
+                    INSERT INTO source_snapshots (id, snapshot_path, source_url, http_status, content_hash, records_extracted, created_at)
+                    VALUES (:id, :path, :url, :status, :hash, :count, :created_at)
+                    ON CONFLICT (id) DO NOTHING;
+                """), {
+                    "id": snapshot_id,
+                    "path": file_path,
+                    "url": source_url,
+                    "status": http_status,
+                    "hash": content_hash,
+                    "count": records_extracted,
+                    "created_at": now
+                })
+                db.commit()
+            except Exception as e:
+                db.rollback()
 
         snapshot_model = RawSnapshotModel(
             snapshot_id=snapshot_id,

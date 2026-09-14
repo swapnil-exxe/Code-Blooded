@@ -19,13 +19,12 @@ class Settings:
     def CORS_ORIGINS(self) -> list[str]:
         raw = os.getenv("CORS_ORIGINS", "")
         if raw:
-            return [o.strip() for o in raw.split(",") if o.strip()]
+            return [o.strip() for o in raw.split(",") if o.strip() and o.strip() != "*"]
         return [
-            "http://localhost:3000",
             "http://localhost:5173",
-            "http://127.0.0.1:3000",
             "http://127.0.0.1:5173",
-            "*",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
         ]
 
     # Security & Authentication (Phase 6.3)

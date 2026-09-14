@@ -6,6 +6,9 @@
 
 ---
 
+> [!NOTE]
+> **HISTORICAL DOCUMENTATION NOTICE**: Render and Vercel cloud deployments referenced in this historical report have been **permanently deleted**. The system has been fully migrated to a **STRICT 100% LOCALHOST-ONLY ARCHITECTURE** (`http://127.0.0.1:5173` frontend & `http://127.0.0.1:8000/api/v1` backend).
+
 ## 1. Executive Summary
 This document records the comprehensive forensic audit and resolution of production parity issues between the local development environment and live production deployments (Render backend & Vercel frontend). The system is fully aligned to use **genuine Supabase PostgreSQL database records (190,942 canonical works)**, live feature engineering pipelines, ML inference/rule engines, and authenticated REST APIs across both localhost and production. All hardcoded mock fallbacks in frontend services and silent SQLite fallbacks in backend database connections have been audited and removed.
 
@@ -28,20 +31,20 @@ This document records the comprehensive forensic audit and resolution of product
 
 ---
 
-## 4. Render Environment
-- **Backend Service**: `https://mplads-ai-command-center-ai-powered.onrender.com/api/v1`
-- **Runtime**: Python 3.13 + Uvicorn
-- **Environment Config**: `render.env`
+## 4. Render Environment (DELETED / DECOMMISSIONED)
+- **Backend Service**: Decommissioned (Replaced by Local Uvicorn: `http://127.0.0.1:8000/api/v1`)
+- **Runtime**: Python 3.13 + Uvicorn (Local)
+- **Environment Config**: Deleted (`render.env`)
 - **Database Connection**: Direct IPv4 connection pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`)
 - **LLM Integration**: Groq API (`[REDACTED_GROQ_API_KEY]`)
 
 ---
 
-## 5. Vercel Environment
-- **Frontend App**: `https://mplads-ai-command-center-ai-powered.vercel.app`
+## 5. Vercel Environment (DELETED / DECOMMISSIONED)
+- **Frontend App**: Decommissioned (Replaced by Local Vite: `http://127.0.0.1:5173`)
 - **Build Output**: Vite SPA Bundle (`dist/index.html`)
-- **API Base URL**: Configured via `VITE_API_BASE_URL` environment variable
-- **SPA Routing**: SPA rewrites configured in `vercel.json`
+- **API Base URL**: `VITE_API_BASE_URL=http://127.0.0.1:8000/api/v1`
+- **SPA Routing**: Handled locally via React Router (`vercel.json` deleted)
 
 ---
 
@@ -119,13 +122,13 @@ All analytical API routes (`/analytics/cost-anomalies`, `/analytics/duplicate-wo
 
 ## 15. Deployment Verification
 - **Render Backend**: Successfully connects to Supabase PostgreSQL pooler and serves live endpoints.
-- **Vercel Frontend**: Successfully compiles with `npm run build` and routes API requests to Render backend.
+- **Vercel Frontend**: Decommissioned (Builds and runs strictly locally).
 
 ---
 
-## 16. Local vs Production Differences
-- **Expected Differences**: Local development targets `http://127.0.0.1:8000/api/v1`, whereas production frontend targets `https://mplads-ai-command-center-ai-powered.onrender.com/api/v1`.
-- **Unexpected Differences**: NONE. Both environments execute identical code paths and consume the exact same database.
+## 16. Local Architecture Target
+- **Target Endpoint**: `http://127.0.0.1:8000/api/v1` for both development and production builds.
+- **Cloud Parity**: Render and Vercel cloud deployments have been permanently removed.
 
 ---
 
@@ -141,10 +144,10 @@ All analytical API routes (`/analytics/cost-anomalies`, `/analytics/duplicate-wo
 - **Root Cause**: Excessive try-catch fallback wrapping in `analytics.ts`, `works.ts`, `health.ts`, `scraper.ts`.
 - **Fix**: Removed try-catch mock fallbacks, enabling direct 1:1 live API data flow.
 
-### [MEDIUM] API Base URL Forced Override in Development
-- **Problem**: `frontend/src/lib/api-client.ts` forced localhost URLs to point to Render unconditionally.
-- **Root Cause**: Lack of `import.meta.env.PROD` checking.
-- **Fix**: Guarded URL overrides with `import.meta.env.PROD`.
+### [MEDIUM] API Base URL Forced Override
+- **Problem**: `frontend/src/lib/api-client.ts` previously had legacy cloud overrides.
+- **Root Cause**: Hostname switching logic.
+- **Fix**: Standardized base URL hardcoded default strictly to `http://127.0.0.1:8000/api/v1`.
 
 ---
 
@@ -152,12 +155,13 @@ All analytical API routes (`/analytics/cost-anomalies`, `/analytics/duplicate-wo
 1. `api/auth/scoping.py`: Guarded jurisdiction scoping.
 2. `api/routers/auth.py`: Added `swapnil15x@gmail.com` alias mapping.
 3. `database/connection.py`: Removed silent SQLite fallback in `get_session()`.
-4. `frontend/src/lib/api-client.ts`: Fixed development vs production base URL resolution.
+4. `frontend/src/lib/api-client.ts`: Standardized strictly to `http://127.0.0.1:8000/api/v1`.
 5. `frontend/src/services/analytics.ts`: Removed mock fallbacks.
 6. `frontend/src/services/works.ts`: Removed mock fallbacks.
 7. `frontend/src/services/health.ts`: Removed mock fallbacks.
 8. `frontend/src/services/scraper.ts`: Removed mock fallbacks.
-9. `render.env`: Set explicit pooler URL and Groq API key.
+9. `render.env` & `vercel.env`: Deleted obsolete cloud deployment files.
+10. `frontend/vercel.json`: Deleted obsolete deployment rewrite configuration file.
 
 ---
 

@@ -21,6 +21,38 @@ class DashboardParser:
         return metrics
 
     @staticmethod
+    def parse_tiles_data_json(json_data: Any, source_url: str = "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/getTilesData") -> List[Dict[str, Any]]:
+        """Parses /rest/PreLoginDashboardData/getTilesData live dictionary response as Source Summary Metrics."""
+        if not isinstance(json_data, dict):
+            return []
+        
+        parsed_metrics = []
+        mapping = [
+            ("Works Recommended", "RECOMMENDED"),
+            ("Works Sanctioned", "SANCTIONED"),
+            ("Works Completed", "COMPLETED")
+        ]
+
+        for tile_name, status_code in mapping:
+            val_arr = json_data.get(tile_name)
+            if isinstance(val_arr, list) and len(val_arr) >= 2:
+                try:
+                    count_val = int(val_arr[0].strip().replace(",", ""))
+                except Exception:
+                    count_val = 0
+                
+                amount_str = val_arr[1].strip()
+                parsed_metrics.append({
+                    "metric_name": tile_name,
+                    "metric_value": str(count_val),
+                    "formatted_value": amount_str,
+                    "status_code": status_code,
+                    "source_url": source_url
+                })
+
+        return parsed_metrics
+
+    @staticmethod
     def parse_tile_report_json(json_data: Any) -> List[Dict[str, Any]]:
         """Parses /getTilesReportData JSON response array."""
         if not json_data:

@@ -46,22 +46,17 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      if (error.response.status === 401) {
-        const isAuthRoute = error.config?.url?.includes('/auth/');
-        if (isAuthRoute || error.config?.method !== 'get') {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
-          }
-        }
+      const isLoginEndpoint = error.config?.url?.includes('/auth/login');
+      if (error.response.status === 401 && !isLoginEndpoint) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       } else if (error.response.status === 429) {
-        // SlowAPI rate limit exceeded
+        // Rate limit exceeded notification
         const retryAfterHeader = error.response.headers['retry-after'];
-        const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : 60;
+        const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : 900;
         window.dispatchEvent(
           new CustomEvent<RateLimitDetail>(RATE_LIMIT_EVENT, {
-            detail: { retryAfter: isNaN(retryAfter) ? 60 : retryAfter },
+            detail: { retryAfter: isNaN(retryAfter) ? 900 : retryAfter },
           })
         );
       }

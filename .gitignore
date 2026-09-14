@@ -2,9 +2,8 @@
 # Environment & Secrets (CRITICAL: Do NOT remove)
 # ==============================================================================
 .env
-.env.local
-.env.*.local
-*.env
+.env.*
+!.env.example
 *.pem
 *.key
 *.cert
@@ -99,6 +98,8 @@ scratch/
 *.tmp
 output/scored_sanctioned_works.csv
 output/scored_sanctioned_works.json
+data/change_logs/
+data/raw/live_source/
 
 # ==============================================================================
 # IDEs & Operating System Files

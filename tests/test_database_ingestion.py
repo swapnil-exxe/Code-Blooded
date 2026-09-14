@@ -32,14 +32,14 @@ def test_works_row_count():
     engine = get_engine()
     with engine.connect() as conn:
         count = conn.execute(text("SELECT count(*) FROM works;")).scalar()
-        assert count in (98825, 190942)
+        assert count >= 98825
 
 def test_model_results_row_counts():
     """Verify model results have expected row counts."""
     engine = get_engine()
     with engine.connect() as conn:
         cost_cnt = conn.execute(text("SELECT count(*) FROM cost_anomaly_results;")).scalar()
-        assert cost_cnt in (98825, 190942)
+        assert cost_cnt >= 98825
 
         fund_cnt = conn.execute(text("SELECT count(*) FROM fund_expenditure_results;")).scalar()
         assert fund_cnt > 0

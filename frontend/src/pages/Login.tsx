@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth, CANONICAL_DEMO_ACCOUNTS, DEMO_PASSWORD } from '@/context/AuthContext';
+import { useAuth, CANONICAL_DEMO_ACCOUNTS } from '@/context/AuthContext';
 import { Role } from '@/types/auth';
 import {
-  Building2,
   Lock,
   Mail,
   ArrowRight,
@@ -17,15 +16,15 @@ import {
 } from 'lucide-react';
 
 export const Login: React.FC = () => {
-  const { login, quickLogin, isAuthenticated } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
-  const [email, setEmail] = useState('ministry@mplads.gov.in');
-  const [password, setPassword] = useState(DEMO_PASSWORD);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeRoleLoading, setActiveRoleLoading] = useState<string | null>(null);
   const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
@@ -36,32 +35,30 @@ export const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setError(null);
     setLoading(true);
+
     try {
       await login({ email, password });
       navigate('/dashboard');
     } catch (err: any) {
-      const msg = err?.response?.data?.detail || 'Authentication failed. Please check credentials.';
+      const status = err?.response?.status;
+      let msg = 'Invalid credentials. Please check your credentials and try again.';
+      if (status === 429) {
+        msg = 'Too many unsuccessful attempts. Please try again later.';
+      }
       setError(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleQuickLogin = async (role: Role, demoEmail: string) => {
+  const handleSelectRole = (demoEmail: string) => {
     setError(null);
-    setActiveRoleLoading(role);
     setEmail(demoEmail);
-    setPassword(DEMO_PASSWORD);
-    try {
-      await quickLogin(role);
-      navigate('/dashboard');
-    } catch (err: any) {
-      const msg = err?.response?.data?.detail || `Failed to log in as ${role}`;
-      setError(msg);
-    } finally {
-      setActiveRoleLoading(null);
+    if (passwordInputRef.current) {
+      passwordInputRef.current.focus();
     }
   };
 
@@ -118,29 +115,29 @@ export const Login: React.FC = () => {
         <main className="flex-1 flex items-center justify-center max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 my-auto">
           <div className="w-full bg-[#0b192c]/25 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* LEFT COLUMN: ONE-CLICK QUICK AUTO LOGIN & DEMO ROLES */}
+            {/* LEFT COLUMN: APPLICATION ROLES GUIDANCE */}
             <div className="lg:col-span-7 space-y-5">
               <div className="space-y-1.5">
                 <div className="inline-flex items-center gap-2 text-[10px] font-mono font-bold tracking-widest uppercase text-amber-300 px-3 py-1 rounded-full bg-[#f59e0b]/20 border border-[#f59e0b]/30 backdrop-blur-md">
                   <Zap className="w-3 h-3 text-[#f59e0b]" />
-                  ONE-CLICK AUTO LOGIN & DEMO ROLES
+                  SELECT OFFICIAL ROLE TO SIGN IN
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight drop-shadow-md">
                   MPLADS AI Surveillance Gateway
                 </h2>
                 <p className="text-xs text-slate-200 leading-relaxed max-w-xl drop-shadow-sm">
-                  Select any of the four demo accounts below for instant 1-click auto-login, or enter credentials manually on the right.
+                  Select any of the official stakeholder role profiles below to select your account email, then enter your authorized credentials on the right.
                 </p>
               </div>
 
-              {/* 4 DEMO ROLE CARDS */}
+              {/* 4 STAKEHOLDER ROLE CARDS */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 {CANONICAL_DEMO_ACCOUNTS.map((acc) => (
                   <button
                     key={acc.role}
                     type="button"
-                    onClick={() => handleQuickLogin(acc.role, acc.email)}
-                    disabled={loading || !!activeRoleLoading}
+                    onClick={() => handleSelectRole(acc.email)}
+                    disabled={loading}
                     className="flex flex-col justify-between text-left p-4 rounded-2xl bg-black/25 hover:bg-black/45 backdrop-blur-md border border-white/20 hover:border-amber-400/60 transition-all duration-200 group cursor-pointer relative overflow-hidden shadow-lg"
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -148,14 +145,8 @@ export const Login: React.FC = () => {
                         {acc.role}
                       </span>
                       <span className="text-[11px] font-medium text-amber-300 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                        {activeRoleLoading === acc.role ? (
-                          'Logging in...'
-                        ) : (
-                          <>
-                            <span>Auto Login</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </>
-                        )}
+                        <span>Select Role</span>
+                        <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>
                     <div>
@@ -172,7 +163,7 @@ export const Login: React.FC = () => {
 
               <div className="flex items-center gap-3 p-3.5 rounded-xl bg-black/30 backdrop-blur-md border border-amber-400/30 text-xs text-amber-200/90 font-mono shadow-md">
                 <ShieldCheck className="w-4 h-4 text-[#f59e0b] shrink-0" />
-                <span>Demo Accounts Password: <strong className="text-white font-bold">{DEMO_PASSWORD}</strong></span>
+                <span>Authoritative Server Authentication: <strong>PostgreSQL Password Hash Verification</strong></span>
               </div>
             </div>
 
@@ -187,9 +178,12 @@ export const Login: React.FC = () => {
               </div>
 
               {error && (
-                <div className="p-3 rounded-xl bg-rose-500/25 border border-rose-400/40 text-rose-200 text-xs flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-                  <span>{error}</span>
+                <div className="p-3.5 rounded-xl bg-rose-500/25 border-2 border-rose-500/60 text-rose-100 text-xs flex items-center gap-3 shadow-lg backdrop-blur-md">
+                  <AlertCircle className="w-5 h-5 shrink-0 text-rose-400" />
+                  <div className="space-y-0.5">
+                    <div className="font-bold text-rose-200 uppercase tracking-wider text-[10px]">Authentication Error</div>
+                    <div className="font-medium text-slate-100">{error}</div>
+                  </div>
                 </div>
               )}
 
@@ -201,10 +195,13 @@ export const Login: React.FC = () => {
                   <div className="relative">
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                     <input
+                      id="login-email"
+                      name="email"
+                      autoComplete="username"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="officer@mplads.gov.in"
+                      placeholder="e.g. officer@mplads.gov.in"
                       required
                       className="w-full bg-white/10 border border-white/20 focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/30 text-white placeholder-slate-400 rounded-xl pl-10 pr-4 py-3 text-xs font-medium transition-all"
                     />
@@ -218,10 +215,14 @@ export const Login: React.FC = () => {
                   <div className="relative">
                     <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                     <input
+                      id="login-password"
+                      name="password"
+                      autoComplete="current-password"
+                      ref={passwordInputRef}
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••••••"
+                      placeholder="Enter password"
                       required
                       className="w-full bg-white/10 border border-white/20 focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/30 text-white placeholder-slate-400 rounded-xl pl-10 pr-10 py-3 text-xs font-medium transition-all"
                     />
@@ -243,10 +244,10 @@ export const Login: React.FC = () => {
 
                 <button
                   type="submit"
-                  disabled={loading || !!activeRoleLoading}
+                  disabled={loading}
                   className="w-full mt-2 py-3.5 px-6 bg-gradient-to-r from-[#d97706] to-[#f59e0b] hover:from-[#b45309] hover:to-[#d97706] text-[#0b192c] font-bold rounded-xl text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 group cursor-pointer"
                 >
-                  <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
+                  <span>{loading ? 'Signing in...' : 'Sign In'}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </form>

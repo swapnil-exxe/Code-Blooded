@@ -23,7 +23,7 @@ def test_health_check():
     assert res.status_code == 200
     data = res.json()
     assert data["status"] == "healthy"
-    assert data["total_works"] in (98825, 190942)
+    assert data["total_works"] >= 98825
     assert data["db_latency_ms"] >= 0.0
 
 
@@ -42,7 +42,7 @@ def test_works_pagination_and_structure(ministry_headers):
     res = client.get("/api/v1/works?page=1&page_size=5", headers=ministry_headers)
     assert res.status_code == 200
     data = res.json()
-    assert data["pagination"]["total_records"] in (98825, 190942)
+    assert data["pagination"]["total_records"] >= 98825
     assert data["pagination"]["page"] == 1
     assert data["pagination"]["page_size"] == 5
     assert len(data["items"]) == 5

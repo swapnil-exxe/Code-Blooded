@@ -29,29 +29,25 @@ app = FastAPI(
     redoc_url=f"{settings.API_V1_STR}/redoc"
 )
 
+def _custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    response = _rate_limit_exceeded_handler(request, exc)
+    response.headers["Retry-After"] = "900"
+    return response
+
 # Attach slowapi rate limiter
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _custom_rate_limit_exceeded_handler)
 
 
-# CORS Middleware
+# CORS Middleware (Strict Origin Allowlist)
 origins = settings.CORS_ORIGINS
-if "*" in origins:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origin_regex=r"https?://.*",
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-else:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+)
 
 # Request Timing & Security Headers Middleware
 @app.middleware("http")

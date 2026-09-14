@@ -12,67 +12,63 @@ from api.auth.security import (
     create_access_token,
 )
 from api.auth.dependencies import CurrentUser, require_roles
-from api.auth.limiter import limiter
+from api.auth.limiter import limiter, failed_login_limiter
 
 router = APIRouter(prefix="/auth", tags=["Authentication & Access Control"])
 
 
 @router.post("/login", response_model=TokenResponse)
-@limiter.limit("5/15minute")
 def login(request: Request, credentials: LoginRequest, db: Session = Depends(get_db)):
     """
     Authenticate a user with email and password.
     Returns an RFC 7519 compliant signed JWT access token.
-    Rate limited to 5 attempts per 15 minutes per IP address.
+    Rate limited to 5 failed attempts per 15 minutes per IP address.
+    Successful logins do not count as failures.
     Includes constant-time dummy verification to mitigate timing-based user enumeration.
     """
+    # 1. Enforce failed login rate limiting
+    failed_login_limiter.check(request)
+
     clean_email = credentials.email.lower().strip()
-    
-    # User-friendly alias mappings for quick demo login
-    alias_map = {
-        "admin": "ministry@mplads.gov.in",
-        "admin@mplads.gov.in": "ministry@mplads.gov.in",
-        "ministry": "ministry@mplads.gov.in",
-        "ministry@mplads.gov.in": "ministry@mplads.gov.in",
-        "swapnil": "swapnil15x@gmail.com",
-        "swapnil15x@gmail.com": "swapnil15x@gmail.com",
-        "mp": "mp.khalsa@mplads.gov.in",
-        "mp.khalsa@mplads.gov.in": "mp.khalsa@mplads.gov.in",
-        "sarabjeet.khalsa@sansad.in": "mp.khalsa@mplads.gov.in",
-        "khalsa": "mp.khalsa@mplads.gov.in",
-        "state": "state.up@mplads.gov.in",
-        "state.up@mplads.gov.in": "state.up@mplads.gov.in",
-        "district": "district.patna@mplads.gov.in",
-        "district.patna@mplads.gov.in": "district.patna@mplads.gov.in",
-    }
-    target_email = alias_map.get(clean_email, clean_email)
-    user = db.query(User).filter(User.email == target_email).first()
+    if not clean_email or not credentials.password:
+        failed_login_limiter.record_failure(request)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = db.query(User).filter(User.email == clean_email).first()
 
     if not user:
         # Mitigate timing attacks by running equalizing dummy bcrypt computation
         verify_dummy_password()
+        failed_login_limiter.record_failure(request)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Invalid credentials.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     valid_pass = verify_password(credentials.password, user.hashed_password)
-    if not valid_pass and credentials.password in ["Mplads@Demo2026#", "password123", "admin", "password", "demo", "Mplads@2026!"]:
-        valid_pass = True
 
     if not valid_pass:
+        failed_login_limiter.record_failure(request)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Invalid credentials.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     if not user.is_active:
+        failed_login_limiter.record_failure(request)
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User account has been deactivated. Contact system administrator.",
         )
+
+    # Clear failure counter on valid authentication
+    failed_login_limiter.record_success(request)
 
     # Construct claims payload
     token_claims = {

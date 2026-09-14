@@ -1,5 +1,6 @@
 import time
 import uuid
+import json
 import logging
 from datetime import datetime
 from typing import Dict, Any, List, Optional
@@ -39,6 +40,13 @@ class LiveScraperPipeline:
 
         db = self._get_db()
 
+        # Check concurrency: if another run is running, abort to prevent simultaneous runs
+        sql_running = "SELECT run_id FROM ingestion_runs WHERE status = 'RUNNING' LIMIT 1;"
+        running_row = db.execute(text(sql_running)).fetchone()
+        if running_row:
+            logger.warning(f"Ingestion run '{running_row[0]}' is currently in progress. Aborting duplicate run request.")
+            raise RuntimeError(f"Ingestion run '{running_row[0]}' is currently in progress.")
+
         # Record run start in DB
         db.execute(text("""
             INSERT INTO ingestion_runs (run_id, start_time, status, records_seen)
@@ -48,8 +56,135 @@ class LiveScraperPipeline:
 
         try:
             # 1. Endpoint Discovery & Raw Extraction
-            raw_rows, source_url, http_status = self.discovery.discover_and_harvest()
+            raw_rows, source_url, http_status, source_type = self.discovery.discover_and_harvest(db=db)
             records_seen = len(raw_rows)
+
+            if records_seen == 0:
+                logger.error(f"Ingestion run {run_id} harvested 0 records from source endpoints.")
+                err_msg = "Live source returned no usable structured records."
+                db.execute(text("""
+                    UPDATE ingestion_runs SET
+                        status = 'FAILED',
+                        end_time = CURRENT_TIMESTAMP,
+                        records_seen = 0,
+                        records_new = 0,
+                        records_updated = 0,
+                        records_unchanged = 0,
+                        error_message = :err
+                    WHERE run_id = :run_id;
+                """), {"run_id": run_id, "err": err_msg})
+                db.commit()
+
+                return IngestionRunStatusModel(
+                    run_id=run_id,
+                    start_time=start_time,
+                    end_time=datetime.now(),
+                    status="FAILED",
+                    records_seen=0,
+                    records_new=0,
+                    records_updated=0,
+                    records_unchanged=0,
+                    error_message=err_msg
+                )
+
+            # Handle LIVE_DASHBOARD_SUMMARY source type (aggregate portal statistics)
+            if source_type == "LIVE_DASHBOARD_SUMMARY":
+                logger.info(f"Processing {records_seen} LIVE_DASHBOARD_SUMMARY metrics for run {run_id}...")
+                
+                # Ensure source_summary_metrics table exists
+                db.execute(text("""
+                    CREATE TABLE IF NOT EXISTS source_summary_metrics (
+                        id SERIAL PRIMARY KEY,
+                        run_id VARCHAR(100) NOT NULL,
+                        metric_name VARCHAR(255) NOT NULL,
+                        metric_value VARCHAR(255),
+                        formatted_value VARCHAR(255),
+                        source_url VARCHAR(500),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """))
+                db.commit()
+
+                # Get latest saved metrics to evaluate idempotency & change detection
+                sql_prev = """
+                    SELECT metric_name, metric_value, formatted_value
+                    FROM source_summary_metrics
+                    ORDER BY id DESC
+                    LIMIT 20;
+                """
+                prev_rows = db.execute(text(sql_prev)).fetchall()
+                prev_map = {r[0]: (r[1], r[2]) for r in prev_rows}
+
+                metrics_new = 0
+                metrics_updated = 0
+                metrics_unchanged = 0
+
+                for m in raw_rows:
+                    m_name = m.get("metric_name", "SUMMARY_METRIC")
+                    m_val = str(m.get("metric_value", "0"))
+                    m_fmt = str(m.get("formatted_value", ""))
+
+                    if m_name not in prev_map:
+                        metrics_new += 1
+                    else:
+                        old_val, old_fmt = prev_map[m_name]
+                        if old_val == m_val and old_fmt == m_fmt:
+                            metrics_unchanged += 1
+                        else:
+                            metrics_updated += 1
+
+                    db.execute(text("""
+                        INSERT INTO source_summary_metrics (run_id, metric_name, metric_value, formatted_value, source_url)
+                        VALUES (:run_id, :m_name, :m_val, :m_fmt, :source_url);
+                    """), {
+                        "run_id": run_id,
+                        "m_name": m_name,
+                        "m_val": m_val,
+                        "m_fmt": m_fmt,
+                        "source_url": source_url
+                    })
+
+                db.commit()
+
+                run_status = "COMPLETED" if (metrics_new > 0 or metrics_updated > 0) else "NO_CHANGES"
+                end_time = datetime.now()
+                duration = (end_time - start_time).total_seconds()
+
+                db.execute(text("""
+                    UPDATE ingestion_runs SET
+                        status = :status,
+                        end_time = :end_time,
+                        records_seen = :records_seen,
+                        records_new = :records_new,
+                        records_updated = :records_updated,
+                        records_unchanged = :records_unchanged,
+                        records_invalid = 0,
+                        duration_seconds = :duration
+                    WHERE run_id = :run_id;
+                """), {
+                    "run_id": run_id,
+                    "status": run_status,
+                    "end_time": end_time,
+                    "records_seen": records_seen,
+                    "records_new": metrics_new,
+                    "records_updated": metrics_updated,
+                    "records_unchanged": metrics_unchanged,
+                    "duration": duration
+                })
+                db.commit()
+
+                return IngestionRunStatusModel(
+                    run_id=run_id,
+                    start_time=start_time,
+                    end_time=end_time,
+                    status=run_status,
+                    records_seen=records_seen,
+                    records_new=metrics_new,
+                    records_updated=metrics_updated,
+                    records_unchanged=metrics_unchanged,
+                    records_invalid=0,
+                    duration_seconds=duration
+                )
 
             # 2. Canonical Schema Normalization
             normalized_works = []
@@ -105,33 +240,26 @@ class LiveScraperPipeline:
                             work_id, house, state, district, constituency, mp_name, ida,
                             work_category, work_type, work_description, work_status,
                             sanction_amount, sanction_date, recommended_date, completion_date,
-                            amount_disbursed, is_completed_flag, source_dataset, source_url,
-                            source_hash, first_seen_at, last_seen_at, record_version, is_current
+                            amount_disbursed, is_completed_flag
                         ) VALUES (
                             :work_id, :house, :state, :district, :constituency, :mp_name, :ida,
                             :work_category, :work_type, :work_description, :work_status,
                             :sanction_amount, :sanction_date, :recommended_date, :completion_date,
-                            :amount_disbursed, :is_completed_flag, :source_dataset, :source_url,
-                            :source_hash, :now_str, :now_str, 1, 1
+                            :amount_disbursed, :is_completed_flag
                         ) ON CONFLICT(work_id) DO UPDATE SET
                             sanction_amount = EXCLUDED.sanction_amount,
                             amount_disbursed = EXCLUDED.amount_disbursed,
-                            work_status = EXCLUDED.work_status,
-                            last_seen_at = :now_str,
-                            source_hash = EXCLUDED.source_hash;
-                    """), {**w.model_dump(), "now_str": now_str})
+                            work_status = EXCLUDED.work_status;
+                    """), w.model_dump())
 
                 for w in updated_works:
                     db.execute(text("""
                         UPDATE works SET
                             sanction_amount = :sanction_amount,
                             amount_disbursed = :amount_disbursed,
-                            work_status = :work_status,
-                            last_seen_at = :now_str,
-                            source_hash = :source_hash,
-                            record_version = record_version + 1
+                            work_status = :work_status
                         WHERE work_id = :work_id;
-                    """), {**w.model_dump(), "now_str": now_str})
+                    """), w.model_dump())
 
                 # Record changes in audit log table
                 for c in change_entries:

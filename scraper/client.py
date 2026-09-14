@@ -65,7 +65,7 @@ class ResilientScraperClient:
         }
 
     def fetch_post_json(self, url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Performs POST request for public JSON APIs."""
+        """Performs POST request for public JSON APIs with resilient encoding handling."""
         time.sleep(scraper_settings.RATE_LIMIT_DELAY_SECONDS)
         cmd = [
             "curl", "-s", "-k",
@@ -76,28 +76,30 @@ class ResilientScraperClient:
             "--max-time", str(scraper_settings.TIMEOUT_SECONDS),
             url
         ]
-        res = subprocess.run(cmd, capture_output=True, text=True)
+        res = subprocess.run(cmd, capture_output=True)
         if res.returncode == 0 and res.stdout:
+            raw_text = res.stdout.decode("utf-8", errors="replace")
             try:
-                data = json.loads(res.stdout)
+                data = json.loads(raw_text)
                 return {
                     "status_code": 200,
                     "data": data,
-                    "raw_text": res.stdout,
+                    "raw_text": raw_text,
                     "url": url
                 }
             except json.JSONDecodeError:
                 return {
                     "status_code": 200,
                     "data": None,
-                    "raw_text": res.stdout,
+                    "raw_text": raw_text,
                     "url": url
                 }
 
+        err_text = res.stderr.decode("utf-8", errors="replace") if res.stderr else "Request failed"
         return {
             "status_code": 500,
             "data": None,
             "raw_text": "",
             "url": url,
-            "error": res.stderr or "Request failed"
+            "error": err_text
         }

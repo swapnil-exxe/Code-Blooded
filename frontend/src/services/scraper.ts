@@ -17,10 +17,14 @@ export interface ScraperLastRun {
 export interface ScraperStatusResponse {
   target_url: string;
   interval_hours: number;
+  source_type: string;
   status: string;
+  is_running: boolean;
   last_run: ScraperLastRun | null;
   total_snapshots_saved: number;
   total_works_in_db: number;
+  total_canonical_works: number;
+  total_ingestion_runs: number;
   source_health: string;
 }
 

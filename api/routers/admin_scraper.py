@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 
 from api.dependencies import get_db
-from api.auth import CurrentUser, OptionalUser
+from api.auth.dependencies import CurrentUser, OptionalUser, require_roles
+from database.models import User
 from scraper.spider import LiveScraperPipeline
 from scraper.config import scraper_settings
 
@@ -17,23 +18,31 @@ router = APIRouter(prefix="/admin/scraper", tags=["Admin & Data Source Pipeline"
 @router.post("/run")
 def trigger_manual_ingestion(
     background_tasks: BackgroundTasks,
-    current_user: OptionalUser = None,
+    current_user: User = Depends(require_roles(["MINISTRY"])),
     db: Session = Depends(get_db)
 ):
     """
     Manually triggers an on-demand live eSAKSHI ingestion run.
+    Returns 409 Conflict if an ingestion run is already in progress.
     """
     user_email = current_user.email if current_user else "demo_public_user@mplads.gov.in"
     logger.info(f"Manual ingestion trigger requested by {user_email}")
     
-    pipeline = LiveScraperPipeline(db_session=db)
-    result = pipeline.run_pipeline()
-
-    return {
-        "status": "success",
-        "message": "Live ingestion run completed successfully.",
-        "details": result.model_dump(mode="json")
-    }
+    try:
+        pipeline = LiveScraperPipeline(db_session=db)
+        result = pipeline.run_pipeline()
+        return {
+            "status": "success",
+            "message": "Live ingestion run completed successfully.",
+            "details": result.model_dump(mode="json")
+        }
+    except RuntimeError as re:
+        if "already in progress" in str(re):
+            raise HTTPException(status_code=409, detail=str(re))
+        raise HTTPException(status_code=500, detail=str(re))
+    except Exception as e:
+        logger.error(f"Ingestion run failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Ingestion run failed: {str(e)}")
 
 @router.get("/status")
 def get_scraper_pipeline_status(
@@ -41,7 +50,7 @@ def get_scraper_pipeline_status(
     db: Session = Depends(get_db)
 ):
     """
-    Returns current live pipeline status, last run metrics, and source health.
+    Returns current live pipeline status, last run metrics, and truthful source health.
     """
     # Fetch last ingestion run from DB
     sql_last_run = """
@@ -54,12 +63,14 @@ def get_scraper_pipeline_status(
     last_run_row = db.execute(text(sql_last_run)).fetchone()
 
     last_run = None
+    source_health = "READY"
     if last_run_row:
+        last_run_status = last_run_row[3]
         last_run = {
             "run_id": last_run_row[0],
             "start_time": str(last_run_row[1]),
             "end_time": str(last_run_row[2]) if last_run_row[2] else None,
-            "status": last_run_row[3],
+            "status": last_run_status,
             "records_seen": last_run_row[4] or 0,
             "records_new": last_run_row[5] or 0,
             "records_updated": last_run_row[6] or 0,
@@ -68,17 +79,30 @@ def get_scraper_pipeline_status(
             "duration_seconds": round(last_run_row[9], 2) if last_run_row[9] else 0.0,
             "error_message": last_run_row[10]
         }
+        if last_run_status == "COMPLETED":
+            source_health = "SUCCESS"
+        elif last_run_status == "NO_CHANGES":
+            source_health = "NO_CHANGES"
+        elif last_run_status == "RUNNING":
+            source_health = "RUNNING"
+        elif last_run_status == "FAILED":
+            source_health = "FAILED"
 
-    # Fetch snapshot count & database total count
+    # Fetch counts
     snapshot_count = db.execute(text("SELECT COUNT(*) FROM source_snapshots;")).scalar() or 0
     db_total_works = db.execute(text("SELECT COUNT(*) FROM works;")).scalar() or 0
+    runs_count = db.execute(text("SELECT COUNT(*) FROM ingestion_runs;")).scalar() or 0
 
     return {
         "target_url": scraper_settings.TARGET_URL,
         "interval_hours": scraper_settings.SCRAPER_INTERVAL_HOURS,
-        "status": "healthy" if (not last_run or last_run["status"] in ["COMPLETED", "NO_CHANGES", "RUNNING"]) else "warning",
+        "source_type": "LIVE_DASHBOARD_SUMMARY",
+        "status": "healthy" if source_health in ["SUCCESS", "NO_CHANGES", "READY", "RUNNING"] else "warning",
+        "is_running": source_health == "RUNNING",
         "last_run": last_run,
         "total_snapshots_saved": snapshot_count,
         "total_works_in_db": db_total_works,
-        "source_health": "LIVE_VERIFIED"
+        "total_canonical_works": db_total_works,
+        "total_ingestion_runs": runs_count,
+        "source_health": source_health
     }

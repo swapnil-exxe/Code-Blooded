@@ -23,10 +23,10 @@ class ChangeDetector:
         if not works:
             return [], [], []
 
-        # Query existing work hashes and amounts from database
-        sql = "SELECT work_id, source_hash, sanction_amount, amount_disbursed, work_status FROM works;"
+        # Query existing work amounts and status from database
+        sql = "SELECT work_id, sanction_amount, amount_disbursed, work_status FROM works;"
         db_rows = db.execute(text(sql)).fetchall()
-        db_map = {r[0]: {"source_hash": r[1], "sanction_amount": r[2], "amount_disbursed": r[3], "work_status": r[4]} for r in db_rows}
+        db_map = {r[0]: {"sanction_amount": r[1], "amount_disbursed": r[2], "work_status": r[3]} for r in db_rows}
 
         change_entries = []
         new_works = []
@@ -49,8 +49,16 @@ class ChangeDetector:
                 change_entries.append(entry)
                 new_works.append(w)
             else:
-                # Existing work: Check hash or field changes
-                if existing["source_hash"] and existing["source_hash"] == w.source_hash:
+                # Existing work: Check field changes
+                changed_fields = []
+                if existing["sanction_amount"] != w.sanction_amount:
+                    changed_fields.append("sanction_amount")
+                if existing["amount_disbursed"] != w.amount_disbursed:
+                    changed_fields.append("amount_disbursed")
+                if existing["work_status"] != w.work_status:
+                    changed_fields.append("work_status")
+
+                if not changed_fields:
                     # UNCHANGED
                     entry = ChangeLogEntryModel(
                         work_id=w.work_id,
@@ -63,16 +71,6 @@ class ChangeDetector:
                     change_entries.append(entry)
                 else:
                     # UPDATED work
-                    changed_fields = []
-                    if existing["sanction_amount"] != w.sanction_amount:
-                        changed_fields.append("sanction_amount")
-                    if existing["amount_disbursed"] != w.amount_disbursed:
-                        changed_fields.append("amount_disbursed")
-                    if existing["work_status"] != w.work_status:
-                        changed_fields.append("work_status")
-                    if not changed_fields:
-                        changed_fields.append("metadata")
-
                     entry = ChangeLogEntryModel(
                         work_id=w.work_id,
                         change_type="UPDATED",

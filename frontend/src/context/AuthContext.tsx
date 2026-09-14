@@ -41,14 +41,11 @@ export const CANONICAL_DEMO_ACCOUNTS: DemoAccount[] = [
   },
 ];
 
-export const DEMO_PASSWORD = 'Mplads@Demo2026#';
-
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
   login: (credentials: LoginRequest) => Promise<void>;
-  quickLogin: (role: Role) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -115,12 +112,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const quickLogin = async (role: Role) => {
-    const demo = CANONICAL_DEMO_ACCOUNTS.find((a) => a.role === role);
-    if (!demo) return;
-    await login({ email: demo.email, password: DEMO_PASSWORD });
-  };
-
   const logout = () => {
     authService.logout();
     setToken(null);
@@ -134,9 +125,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         isLoading,
         login,
-        quickLogin,
         logout,
-        isAuthenticated: !!token,
+        isAuthenticated: !!token && !!user,
       }}
     >
       {children}

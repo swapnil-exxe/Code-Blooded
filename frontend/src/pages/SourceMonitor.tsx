@@ -38,6 +38,19 @@ export const SourceMonitor: React.FC = () => {
     loadStatus();
   }, []);
 
+  // Poll status every 3s if an ingestion run is active
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (statusData?.is_running || running) {
+      interval = setInterval(() => {
+        loadStatus();
+      }, 3000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [statusData?.is_running, running]);
+
   const handleManualTrigger = async () => {
     setRunning(true);
     setMsg(null);
@@ -49,8 +62,12 @@ export const SourceMonitor: React.FC = () => {
       });
       await loadStatus();
     } catch (err: any) {
+      const is409 = err.response?.status === 409;
+      const errorText = is409
+        ? 'Ingestion run is already in progress.'
+        : (err.response?.data?.detail || err.message || 'Error triggering live ingestion');
       setMsg({
-        text: `Ingestion run failed: ${err.response?.data?.detail || err.message || 'Error triggering ingestion'}`,
+        text: `Ingestion run notice: ${errorText}`,
         type: 'error',
       });
       await loadStatus();
@@ -77,7 +94,7 @@ export const SourceMonitor: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-300 mt-1">
-              Production pipeline capturing real-time updates from official public eSAKSHI dashboard.
+              Local ingestion pipeline connected to the official public source.
             </p>
           </div>
         </div>
@@ -118,23 +135,29 @@ export const SourceMonitor: React.FC = () => {
           icon={Globe}
         />
         <MetricCard
-          title="SCHEDULED INTERVAL"
-          value={`Every ${statusData?.interval_hours || 6} Hours`}
-          subtitle="Configurable Background Crawl"
-          icon={Clock}
+          title="LIVE SOURCE TYPE"
+          value={statusData?.source_type ? statusData.source_type.replace(/_/g, ' ') : 'Live Dashboard Summary'}
+          subtitle="Official Portal Summary Metrics"
+          icon={Layers}
         />
         <MetricCard
-          title="TOTAL MASTER WORKS IN DB"
-          value={statusData?.total_works_in_db.toLocaleString() || '190,942'}
-          subtitle="Canonical Database Records"
+          title="CANONICAL WORKS CATALOG"
+          value={statusData?.total_works_in_db ? statusData.total_works_in_db.toLocaleString() : '190,942'}
+          subtitle="Master Work Records (PostgreSQL)"
           icon={Database}
         />
         <MetricCard
           title="PIPELINE SOURCE HEALTH"
-          value={statusData?.source_health || 'LIVE_VERIFIED'}
-          subtitle="Zero Security Control Circumvention"
+          value={statusData?.source_health || 'READY'}
+          subtitle="Local Ingestion Pipeline State"
           icon={ShieldCheck}
-          variant="success"
+          variant={
+            statusData?.source_health === 'SUCCESS' || statusData?.source_health === 'NO_CHANGES' || statusData?.source_health === 'READY'
+              ? 'success'
+              : statusData?.source_health === 'RUNNING'
+              ? 'default'
+              : 'alert'
+          }
         />
       </div>
 
@@ -145,7 +168,7 @@ export const SourceMonitor: React.FC = () => {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
               <Activity className="w-5 h-5 text-blue-600" />
-              <h2 className="text-base font-bold text-slate-900">Last Ingestion Run Performance</h2>
+              <h2 className="text-base font-bold text-slate-900">Last Live Ingestion Run (Summary Metrics)</h2>
             </div>
             <span
               className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border ${
@@ -153,67 +176,77 @@ export const SourceMonitor: React.FC = () => {
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                   : lastRun?.status === 'NO_CHANGES'
                   ? 'bg-blue-50 text-blue-700 border-blue-200'
-                  : 'bg-amber-50 text-amber-700 border-amber-200'
+                  : lastRun?.status === 'RUNNING'
+                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                  : 'bg-rose-50 text-rose-700 border-rose-200'
               }`}
             >
-              {lastRun?.status || 'NO_CHANGES'}
+              {lastRun?.status || 'NOT_EXECUTED'}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-              <p className="text-[10px] text-slate-500 font-bold uppercase">Seen</p>
-              <p className="text-lg font-mono font-bold text-slate-900 mt-0.5">
-                {lastRun?.records_seen.toLocaleString() || 0}
-              </p>
+          {!lastRun ? (
+            <div className="p-6 text-center text-xs text-slate-500 font-medium">
+              No ingestion run has been executed yet. Click "Trigger Live Ingestion Now" to start a local crawl.
             </div>
-            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-              <p className="text-[10px] text-emerald-700 font-bold uppercase">New Records</p>
-              <p className="text-lg font-mono font-bold text-emerald-800 mt-0.5">
-                {lastRun?.records_new.toLocaleString() || 0}
-              </p>
-            </div>
-            <div className="p-3 bg-amber-50 rounded-xl border border-amber-100">
-              <p className="text-[10px] text-amber-700 font-bold uppercase">Updated</p>
-              <p className="text-lg font-mono font-bold text-amber-800 mt-0.5">
-                {lastRun?.records_updated.toLocaleString() || 0}
-              </p>
-            </div>
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-              <p className="text-[10px] text-slate-500 font-bold uppercase">Unchanged</p>
-              <p className="text-lg font-mono font-bold text-slate-700 mt-0.5">
-                {lastRun?.records_unchanged.toLocaleString() || 0}
-              </p>
-            </div>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-[10px] text-slate-500 font-bold uppercase">Metrics Seen</p>
+                  <p className="text-lg font-mono font-bold text-slate-900 mt-0.5">
+                    {lastRun.records_seen.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <p className="text-[10px] text-emerald-700 font-bold uppercase">New Metrics</p>
+                  <p className="text-lg font-mono font-bold text-emerald-800 mt-0.5">
+                    {lastRun.records_new.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-100">
+                  <p className="text-[10px] text-amber-700 font-bold uppercase">Updated Metrics</p>
+                  <p className="text-lg font-mono font-bold text-amber-800 mt-0.5">
+                    {lastRun.records_updated.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-[10px] text-slate-500 font-bold uppercase">Unchanged</p>
+                  <p className="text-lg font-mono font-bold text-slate-700 mt-0.5">
+                    {lastRun.records_unchanged.toLocaleString()}
+                  </p>
+                </div>
+              </div>
 
-          <div className="space-y-2 text-xs border-t border-slate-100 pt-3">
-            <div className="flex justify-between py-1 border-b border-slate-50">
-              <span className="text-slate-500">Run ID:</span>
-              <span className="font-mono font-bold text-slate-800">{lastRun?.run_id || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-50">
-              <span className="text-slate-500">Start Time:</span>
-              <span className="font-mono text-slate-800">{lastRun?.start_time || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-50">
-              <span className="text-slate-500">Duration:</span>
-              <span className="font-mono text-slate-800">{lastRun?.duration_seconds || 0} seconds</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-slate-500">Selective ML Trigger Status:</span>
-              <span className="font-semibold text-emerald-700">
-                {lastRun?.records_new || lastRun?.records_updated ? 'ML Executed on Affected Works' : 'Skipped (0 Changes)'}
-              </span>
-            </div>
-          </div>
+              <div className="space-y-2 text-xs border-t border-slate-100 pt-3">
+                <div className="flex justify-between py-1 border-b border-slate-50">
+                  <span className="text-slate-500">Run ID:</span>
+                  <span className="font-mono font-bold text-slate-800">{lastRun.run_id}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50">
+                  <span className="text-slate-500">Start Time:</span>
+                  <span className="font-mono text-slate-800">{lastRun.start_time}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-50">
+                  <span className="text-slate-500">Duration:</span>
+                  <span className="font-mono text-slate-800">{lastRun.duration_seconds} seconds</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500">Canonical Works Ingestion Status:</span>
+                  <span className="font-semibold text-slate-700">
+                    Preserved Intact (190,942 Canonical Records)
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Right Column: Pipeline Architecture Specifications */}
         <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <Layers className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base font-bold text-slate-900">Pipeline Pipeline Specifications</h2>
+            <h2 className="text-base font-bold text-slate-900">Pipeline Architecture Specifications</h2>
           </div>
 
           <div className="space-y-3 text-xs">

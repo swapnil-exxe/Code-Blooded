@@ -18,15 +18,21 @@ router = APIRouter(prefix="/auth", tags=["Authentication & Access Control"])
 
 
 @router.post("/login", response_model=TokenResponse)
-@limiter.limit("30/minute")
+@limiter.limit("5/15minute")
 def login(request: Request, credentials: LoginRequest, db: Session = Depends(get_db)):
     """
     Authenticate a user with email and password.
     Returns an RFC 7519 compliant signed JWT access token.
-    Rate limited to 5 attempts per minute per IP address.
+    Rate limited to 5 attempts per 15 minutes per IP address.
     Includes constant-time dummy verification to mitigate timing-based user enumeration.
     """
     clean_email = credentials.email.lower().strip()
+    if not clean_email or not credentials.password:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     user = db.query(User).filter(User.email == clean_email).first()
 
     if not user:
@@ -34,14 +40,14 @@ def login(request: Request, credentials: LoginRequest, db: Session = Depends(get
         verify_dummy_password()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Invalid credentials.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     if not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Invalid credentials.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

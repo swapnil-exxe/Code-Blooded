@@ -75,9 +75,7 @@ def get_db_url() -> str:
         raw_pg = f"postgresql://{user}:{password}@{host}:{port}/{db}"
         return _sanitize_db_url(raw_pg)
 
-    # 3. Default to Live Supabase PostgreSQL Connection via IPv4 Pooler
-    supabase_url = "postgresql://postgres.fcpwrmzviqrhsdgelwmk:Mplads%402026!@aws-0-ap-south-1.pooler.supabase.com:6543/postgres"
-    return supabase_url
+    raise ValueError("DATABASE_URL environment variable is not configured. Please set DATABASE_URL in your .env file.")
 
 def get_engine(db_url: str = None, pool_size: int = 10, max_overflow: int = 20):
     """Creates a thread-safe SQLAlchemy engine with connection pooling."""

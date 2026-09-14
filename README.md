@@ -35,6 +35,29 @@
 
 ---
 
+## 0. Localhost Execution Guide (100% Local Application Architecture)
+
+This application runs strictly locally on your machine, connected directly to the real Supabase PostgreSQL dataset.
+
+### Starting the Backend API (Terminal 1)
+```bash
+PYTHONPATH=. uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+### Starting the Frontend SPA (Terminal 2)
+```bash
+cd frontend
+npm run dev -- --host 127.0.0.1 --port 5173
+```
+
+### Local Application Endpoints
+- **Frontend SPA**: `http://127.0.0.1:5173`
+- **FastAPI Backend**: `http://127.0.0.1:8000`
+- **REST API Base URL**: `http://127.0.0.1:8000/api/v1`
+- **Interactive Swagger Docs**: `http://127.0.0.1:8000/docs`
+
+---
+
 ## 1. Project Overview
 
 ### What the Project Is
