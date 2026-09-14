@@ -110,17 +110,11 @@ _engine = None
 _SessionLocal = None
 
 def get_session():
-    """Contextual session generator with automatic SQLite fallback if primary DB is unreachable."""
+    """Contextual session generator using canonical database engine."""
     global _engine, _SessionLocal
     if _engine is None:
-        try:
-            _engine = get_engine()
-            _SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_engine)
-        except Exception as e:
-            print(f"[DATABASE WARN] Primary DB engine creation failed ({e}). Falling back to SQLite.")
-            sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
-            _engine = create_engine(f"sqlite:///{sqlite_path}", connect_args={"check_same_thread": False})
-            _SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_engine)
+        _engine = get_engine()
+        _SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_engine)
     return _SessionLocal()
 
 def check_connection() -> bool:
