@@ -5,14 +5,6 @@ import type { DuplicatePairItem, WorkDuplicateLookupResponse } from '@/types/dup
 import type { FundAnomalyItem, FundAnomalyDetail } from '@/types/fund_anomaly';
 import type { DelayItem, DelayDetail } from '@/types/delay';
 import type { DistrictSummaryItem, MPSummaryItem } from '@/types/summaries';
-import {
-  MOCK_COST_ANOMALIES,
-  MOCK_DUPLICATE_WORKS,
-  MOCK_FUND_ANOMALIES,
-  MOCK_DELAYS,
-  MOCK_MP_SUMMARIES,
-  MOCK_DISTRICT_SUMMARIES,
-} from './mockData';
 
 function cleanParams<T extends Record<string, any>>(params?: T): Record<string, any> | undefined {
   if (!params) return undefined;
@@ -35,33 +27,8 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<CostAnomalyItem>> {
-    try {
-      const { data } = await apiClient.get<PaginatedResponse<CostAnomalyItem>>('/analytics/cost-anomalies', { params: cleanParams(params) });
-      if (data && Array.isArray(data.items) && data.items.length > 0) return data;
-      return {
-        items: MOCK_COST_ANOMALIES,
-        pagination: {
-          total_records: 16493,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 825,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    } catch {
-      return {
-        items: MOCK_COST_ANOMALIES,
-        pagination: {
-          total_records: 16493,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 825,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    }
+    const { data } = await apiClient.get<PaginatedResponse<CostAnomalyItem>>('/analytics/cost-anomalies', { params: cleanParams(params) });
+    return data;
   },
 
   async getCostAnomalyById(workId: string): Promise<CostAnomalyDetail> {
@@ -80,33 +47,8 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<DuplicatePairItem>> {
-    try {
-      const { data } = await apiClient.get<PaginatedResponse<DuplicatePairItem>>('/analytics/duplicate-works', { params: cleanParams(params) });
-      if (data && Array.isArray(data.items) && data.items.length > 0) return data;
-      return {
-        items: MOCK_DUPLICATE_WORKS,
-        pagination: {
-          total_records: 48158,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 2408,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    } catch {
-      return {
-        items: MOCK_DUPLICATE_WORKS,
-        pagination: {
-          total_records: 48158,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 2408,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    }
+    const { data } = await apiClient.get<PaginatedResponse<DuplicatePairItem>>('/analytics/duplicate-works', { params: cleanParams(params) });
+    return data;
   },
 
   async getDuplicatePairsForWork(workId: string): Promise<WorkDuplicateLookupResponse> {
@@ -126,33 +68,8 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<FundAnomalyItem>> {
-    try {
-      const { data } = await apiClient.get<PaginatedResponse<FundAnomalyItem>>('/analytics/fund-anomalies', { params: cleanParams(params) });
-      if (data && Array.isArray(data.items) && data.items.length > 0) return data;
-      return {
-        items: MOCK_FUND_ANOMALIES,
-        pagination: {
-          total_records: 101,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 6,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    } catch {
-      return {
-        items: MOCK_FUND_ANOMALIES,
-        pagination: {
-          total_records: 101,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 6,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    }
+    const { data } = await apiClient.get<PaginatedResponse<FundAnomalyItem>>('/analytics/fund-anomalies', { params: cleanParams(params) });
+    return data;
   },
 
   async getFundAnomalyById(workId: string): Promise<FundAnomalyDetail> {
@@ -170,33 +87,8 @@ export const analyticsService = {
     page?: number;
     page_size?: number;
   }): Promise<PaginatedResponse<DelayItem>> {
-    try {
-      const { data } = await apiClient.get<PaginatedResponse<DelayItem>>('/analytics/delays', { params: cleanParams(params) });
-      if (data && Array.isArray(data.items) && data.items.length > 0) return data;
-      return {
-        items: MOCK_DELAYS,
-        pagination: {
-          total_records: 24811,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 1241,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    } catch {
-      return {
-        items: MOCK_DELAYS,
-        pagination: {
-          total_records: 24811,
-          page: params?.page || 1,
-          page_size: params?.page_size || 20,
-          total_pages: 1241,
-          has_next: true,
-          has_prev: false,
-        },
-      };
-    }
+    const { data } = await apiClient.get<PaginatedResponse<DelayItem>>('/analytics/delays', { params: cleanParams(params) });
+    return data;
   },
 
   async getDelayById(workId: string): Promise<DelayDetail> {
@@ -207,13 +99,8 @@ export const analyticsService = {
   // Summaries
   async getDistrictSummaries(params?: { state?: string; limit?: number }): Promise<DistrictSummaryItem[]> {
     const queryParams = { limit: 5000, ...params };
-    try {
-      const { data } = await apiClient.get<DistrictSummaryItem[]>('/analytics/district-summary', { params: cleanParams(queryParams) });
-      if (Array.isArray(data) && data.length > 0) return data;
-      return MOCK_DISTRICT_SUMMARIES;
-    } catch {
-      return MOCK_DISTRICT_SUMMARIES;
-    }
+    const { data } = await apiClient.get<DistrictSummaryItem[]>('/analytics/district-summary', { params: cleanParams(queryParams) });
+    return data;
   },
 
   async getMPSummaries(params?: { state?: string; house?: string; limit?: number; mp_name?: string }): Promise<MPSummaryItem[]> {
@@ -224,124 +111,27 @@ export const analyticsService = {
 
   // Trend Analytics Endpoints
   async getNationalTrends(params?: any): Promise<any> {
-    try {
-      const { data } = await apiClient.get('/analytics/trends/national', { params });
-      return data;
-    } catch {
-      return {
-        summary: {
-          total_canonical_works: 190942,
-          latest_quarter: '2026Q3',
-          latest_cost_anomaly_rate: 0.086,
-          latest_delay_rate: 0.130,
-          latest_fund_anomaly_rate: 0.001,
-          latest_duplicate_work_rate: 0.252,
-          statutory_mandate: 'MPLADS Guidelines Para 3.12'
-        },
-        quarterly_trends: [
-          { year_quarter: '2024Q3', cost_anomaly_rate: 0.082, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.125 },
-          { year_quarter: '2024Q4', cost_anomaly_rate: 0.084, duplicate_work_rate: 0.248, fund_anomaly_rate: 0.001, delay_rate: 0.128 },
-          { year_quarter: '2025Q1', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.129 },
-          { year_quarter: '2025Q2', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.251, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2025Q3', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.252, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2025Q4', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.252, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2026Q1', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.252, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2026Q2', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.252, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2026Q3', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.252, fund_anomaly_rate: 0.001, delay_rate: 0.130 }
-        ]
-      };
-    }
+    const { data } = await apiClient.get('/analytics/trends/national', { params: cleanParams(params) });
+    return data;
   },
 
   async getStateTrends(params?: any): Promise<any> {
-    try {
-      const { data } = await apiClient.get('/analytics/trends/state', { params });
-      return data;
-    } catch {
-      return {
-        state: params?.state || 'UTTAR PRADESH',
-        national_benchmark_quarter: { national_cost_rate: 0.086, national_delay_rate: 0.130 },
-        trends: [
-          { year_quarter: '2024Q3', cost_anomaly_rate: 0.080, duplicate_work_rate: 0.240, fund_anomaly_rate: 0.001, delay_rate: 0.120 },
-          { year_quarter: '2024Q4', cost_anomaly_rate: 0.082, duplicate_work_rate: 0.244, fund_anomaly_rate: 0.001, delay_rate: 0.124 },
-          { year_quarter: '2025Q1', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.248, fund_anomaly_rate: 0.001, delay_rate: 0.128 },
-          { year_quarter: '2025Q2', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2025Q3', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.251, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2025Q4', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.251, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2026Q1', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.251, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2026Q2', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.251, fund_anomaly_rate: 0.001, delay_rate: 0.130 },
-          { year_quarter: '2026Q3', cost_anomaly_rate: 0.086, duplicate_work_rate: 0.251, fund_anomaly_rate: 0.001, delay_rate: 0.130 }
-        ]
-      };
-    }
+    const { data } = await apiClient.get('/analytics/trends/state', { params: cleanParams(params) });
+    return data;
   },
 
   async getDistrictTrends(params?: any): Promise<any> {
-    try {
-      const { data } = await apiClient.get('/analytics/trends/district', { params });
-      return data;
-    } catch {
-      return {
-        state: params?.state || 'UTTAR PRADESH',
-        district: params?.district || 'LUCKNOW',
-        credibility_tier: 'ROBUST',
-        state_peer_benchmark: { state_cost_rate: 0.086, state_delay_rate: 0.130 },
-        trends: [
-          { year_quarter: '2024Q3', cost_anomaly_rate: 0.078, duplicate_work_rate: 0.235, fund_anomaly_rate: 0.001, delay_rate: 0.118 },
-          { year_quarter: '2024Q4', cost_anomaly_rate: 0.081, duplicate_work_rate: 0.240, fund_anomaly_rate: 0.001, delay_rate: 0.122 },
-          { year_quarter: '2025Q1', cost_anomaly_rate: 0.084, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.126 },
-          { year_quarter: '2025Q2', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.248, fund_anomaly_rate: 0.001, delay_rate: 0.128 },
-          { year_quarter: '2025Q3', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.129 },
-          { year_quarter: '2025Q4', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.129 },
-          { year_quarter: '2026Q1', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.129 },
-          { year_quarter: '2026Q2', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.129 },
-          { year_quarter: '2026Q3', cost_anomaly_rate: 0.085, duplicate_work_rate: 0.250, fund_anomaly_rate: 0.001, delay_rate: 0.129 }
-        ]
-      };
-    }
+    const { data } = await apiClient.get('/analytics/trends/district', { params: cleanParams(params) });
+    return data;
   },
 
   async getMPTrends(params?: any): Promise<any> {
-    try {
-      const { data } = await apiClient.get('/analytics/trends/mp', { params });
-      return data;
-    } catch {
-      return {
-        mp_name: params?.mp_name || 'Sarabjeet Singh Khalsa',
-        house: 'Lok Sabha',
-        tenure_summary: { tenure_total_works: 124, tenure_sanctioned_amount: 50000000 },
-        house_benchmark: {},
-        trends: [
-          { fiscal_year_or_quarter: '2024Q3', cost_anomaly_rate: 0.075, duplicate_work_rate: 0.230, fund_anomaly_rate: 0.001, delay_rate: 0.115 },
-          { fiscal_year_or_quarter: '2024Q4', cost_anomaly_rate: 0.078, duplicate_work_rate: 0.235, fund_anomaly_rate: 0.001, delay_rate: 0.120 },
-          { fiscal_year_or_quarter: '2025Q1', cost_anomaly_rate: 0.080, duplicate_work_rate: 0.240, fund_anomaly_rate: 0.001, delay_rate: 0.124 },
-          { fiscal_year_or_quarter: '2025Q2', cost_anomaly_rate: 0.082, duplicate_work_rate: 0.244, fund_anomaly_rate: 0.001, delay_rate: 0.126 },
-          { fiscal_year_or_quarter: '2025Q3', cost_anomaly_rate: 0.083, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.127 },
-          { fiscal_year_or_quarter: '2025Q4', cost_anomaly_rate: 0.083, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.127 },
-          { fiscal_year_or_quarter: '2026Q1', cost_anomaly_rate: 0.083, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.127 },
-          { fiscal_year_or_quarter: '2026Q2', cost_anomaly_rate: 0.083, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.127 },
-          { fiscal_year_or_quarter: '2026Q3', cost_anomaly_rate: 0.083, duplicate_work_rate: 0.245, fund_anomaly_rate: 0.001, delay_rate: 0.127 }
-        ]
-      };
-    }
+    const { data } = await apiClient.get('/analytics/trends/mp', { params: cleanParams(params) });
+    return data;
   },
 
   async getEarlyWarnings(params?: any): Promise<any> {
-    try {
-      const { data } = await apiClient.get('/analytics/early-warnings', { params });
-      return data;
-    } catch {
-      return {
-        total_alerts: 4,
-        watchlist_count: 2,
-        critical_count: 2,
-        alerts: [
-          { work_id: 'W_UP_LKO_1092', state: 'UTTAR PRADESH', district: 'LUCKNOW', mp_name: 'RAJNATH SINGH', sanction_amount: 4500000, warning_type: 'SLA_SANCTION_CLIFF', paradigm: 'STATUTORY', days_elapsed: 68, urgency_level: 'CRITICAL', action_recommended: 'Expedite administrative sanction approval before 75-day SLA breach threshold.' },
-          { work_id: 'W_BH_PAT_2081', state: 'BIHAR', district: 'PATNA', mp_name: 'RUDY RAJIV PRATAP', sanction_amount: 3200000, warning_type: 'STAGNATION_INCUBATION', paradigm: 'STATISTICAL', days_elapsed: 142, urgency_level: 'CRITICAL', action_recommended: 'Issue formal query to implementing agency regarding stalled disbursement.' },
-          { work_id: 'W_MH_PUN_3045', state: 'MAHARASHTRA', district: 'PUNE', mp_name: 'SUPRIYA SULE', sanction_amount: 5800000, warning_type: 'BATCH_DUPLICATE_CLUSTER', paradigm: 'MODEL_PREDICTIVE', days_elapsed: 45, urgency_level: 'WATCHLIST', action_recommended: 'Verify site physical location coordinates to prevent duplicate outlay.' },
-          { work_id: 'W_PB_FAR_4012', state: 'PUNJAB', district: 'FARIDKOT', mp_name: 'SARABJEET SINGH KHALSA', sanction_amount: 2500000, warning_type: 'SLA_SANCTION_CLIFF', paradigm: 'STATUTORY', days_elapsed: 60, urgency_level: 'WATCHLIST', action_recommended: 'Monitor sanction workflow status.' }
-        ]
-      };
-    }
+    const { data } = await apiClient.get('/analytics/early-warnings', { params: cleanParams(params) });
+    return data;
   },
 };

@@ -26,50 +26,12 @@ export interface ScraperStatusResponse {
 
 export const scraperService = {
   async getStatus(): Promise<ScraperStatusResponse> {
-    try {
-      const { data } = await apiClient.get<ScraperStatusResponse>('/admin/scraper/status');
-      return data;
-    } catch {
-      return {
-        target_url: 'https://mplads.mospi.gov.in/digigov/dashboard.html',
-        interval_hours: 6,
-        status: 'healthy',
-        last_run: {
-          run_id: 'run_live_demo',
-          start_time: new Date().toISOString(),
-          end_time: new Date().toISOString(),
-          status: 'NO_CHANGES',
-          records_seen: 190942,
-          records_new: 0,
-          records_updated: 0,
-          records_unchanged: 190942,
-          records_invalid: 0,
-          duration_seconds: 4.2,
-          error_message: null,
-        },
-        total_snapshots_saved: 12,
-        total_works_in_db: 190942,
-        source_health: 'LIVE_VERIFIED',
-      };
-    }
+    const { data } = await apiClient.get<ScraperStatusResponse>('/admin/scraper/status');
+    return data;
   },
 
   async triggerRun(): Promise<any> {
-    try {
-      const { data } = await apiClient.post('/admin/scraper/run');
-      return data;
-    } catch {
-      return {
-        status: 'success',
-        message: 'Live ingestion run completed successfully.',
-        details: {
-          run_id: `run_live_${Date.now().toString(36)}`,
-          records_seen: 190942,
-          records_new: 0,
-          records_updated: 0,
-          records_unchanged: 190942,
-        },
-      };
-    }
+    const { data } = await apiClient.post('/admin/scraper/run');
+    return data;
   },
 };
