@@ -1,18 +1,7 @@
 import axios from 'axios';
 
 export function getApiBaseUrl(): string {
-  const rawUrl = (import.meta.env.VITE_API_BASE_URL || '').trim();
-  let envUrl = rawUrl;
-
-  if (import.meta.env.PROD) {
-    if (!envUrl || envUrl.includes('localhost') || envUrl.includes('127.0.0.1')) {
-      envUrl = 'https://mplads-ai-command-center-ai-powered.onrender.com/api/v1';
-    }
-  } else {
-    if (!envUrl) {
-      envUrl = 'http://127.0.0.1:8000/api/v1';
-    }
-  }
+  let envUrl = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1').trim();
 
   if (envUrl.endsWith('/')) {
     envUrl = envUrl.slice(0, -1);
