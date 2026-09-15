@@ -2,7 +2,7 @@ import os
 import re
 import pytest
 from fastapi.testclient import TestClient
-from backend.main import app
+from api.main import app
 from api.routers.chat import check_prompt_injection, sanitize_chat_output
 
 client = TestClient(app)

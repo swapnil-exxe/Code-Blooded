@@ -151,6 +151,6 @@
       "explanation": "Financial Anomaly Strength: 0.89 (HIGH). Multi-variate financial outlier across disbursement timeline, tranche distribution, and fund concentration."
     }
   ],
-  "runtime_seconds": 5.19,
-  "timestamp": "2026-09-14T23:23:57.868018"
+  "runtime_seconds": 5.09,
+  "timestamp": "2026-09-15T22:43:10.107173"
 }

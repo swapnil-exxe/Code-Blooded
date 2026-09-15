@@ -118,7 +118,12 @@ def test_role_isolation_admin_access_denied():
         user = session.query(User).filter(User.role == role_name).first()
         if user:
             token = create_access_token(data={"sub": str(user.id), "email": user.email, "role": user.role})
-            res = client.post("/api/v1/admin/scraper/run", headers={"Authorization": f"Bearer {token}"})
+            res = client.post("/api/v1/auth/users", json={
+                "email": "unauthorized.new@mplads.gov.in",
+                "password": "Password123!",
+                "full_name": "Unauthorized User",
+                "role": "MP"
+            }, headers={"Authorization": f"Bearer {token}"})
             assert res.status_code == 403, f"Expected 403 Forbidden for role {role_name}, got {res.status_code}"
 
 
