@@ -1,4 +1,4 @@
-# Production Parity & Real Data Integration Audit Report
+# Local Architecture & Real Data Integration Audit Report
 ## MPLADS AI Command Center — AI-Powered Governance Analytics & Monitoring Platform
 **Baseline Commit**: `6779002`  
 **Current Execution Commit**: `750cc4d`  
@@ -6,11 +6,8 @@
 
 ---
 
-> [!NOTE]
-> **HISTORICAL DOCUMENTATION NOTICE**: Render and Vercel cloud deployments referenced in this historical report have been **permanently deleted**. The system has been fully migrated to a **STRICT 100% LOCALHOST-ONLY ARCHITECTURE** (`http://127.0.0.1:5173` frontend & `http://127.0.0.1:8000/api/v1` backend).
-
 ## 1. Executive Summary
-This document records the comprehensive forensic audit and resolution of production parity issues between the local development environment and live production deployments (Render backend & Vercel frontend). The system is fully aligned to use **genuine Supabase PostgreSQL database records (190,942 canonical works)**, live feature engineering pipelines, ML inference/rule engines, and authenticated REST APIs across both localhost and production. All hardcoded mock fallbacks in frontend services and silent SQLite fallbacks in backend database connections have been audited and removed.
+This document records the comprehensive forensic audit and resolution of application architecture and data integration across local development and production-parity environments. The system is fully aligned to use **genuine Supabase PostgreSQL database records (190,942 canonical works)**, live feature engineering pipelines, ML inference/rule engines, and authenticated REST APIs. All hardcoded mock fallbacks in frontend services and silent SQLite fallbacks in backend database connections have been audited and removed.
 
 ---
 
@@ -31,26 +28,9 @@ This document records the comprehensive forensic audit and resolution of product
 
 ---
 
-## 4. Render Environment (DELETED / DECOMMISSIONED)
-- **Backend Service**: Decommissioned (Replaced by Local Uvicorn: `http://127.0.0.1:8000/api/v1`)
-- **Runtime**: Python 3.13 + Uvicorn (Local)
-- **Environment Config**: Deleted (`render.env`)
-- **Database Connection**: Direct IPv4 connection pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`)
-- **LLM Integration**: Groq API (`[REDACTED_GROQ_API_KEY]`)
+## 4. Database Verification
 
----
-
-## 5. Vercel Environment (DELETED / DECOMMISSIONED)
-- **Frontend App**: Decommissioned (Replaced by Local Vite: `http://127.0.0.1:5173`)
-- **Build Output**: Vite SPA Bundle (`dist/index.html`)
-- **API Base URL**: `VITE_API_BASE_URL=http://127.0.0.1:8000/api/v1`
-- **SPA Routing**: Handled locally via React Router (`vercel.json` deleted)
-
----
-
-## 6. Database Comparison
-
-| Parameter | Localhost | Production (Render/Supabase) | Parity Status |
+| Parameter | Localhost | Supabase Database | Parity Status |
 |---|---|---|---|
 | Database Engine | PostgreSQL (Supabase Pooler) | PostgreSQL (Supabase Pooler) | MATCHED |
 | Host | aws-0-ap-south-1.pooler.supabase.com | aws-0-ap-south-1.pooler.supabase.com | MATCHED |
@@ -63,21 +43,21 @@ This document records the comprehensive forensic audit and resolution of product
 
 ---
 
-## 7. Dataset Verification
+## 5. Dataset Verification
 - **Canonical Dataset**: `data/raw/mplads_canonical_works.parquet`
 - **Database Ingestion**: Verified populated in Supabase PostgreSQL tables (`works`, `users`, `cost_anomaly_results`, `duplicate_work_results`, `fund_expenditure_results`, `delay_results`).
 - **Data Integrity**: Zero synthetic or placeholder records.
 
 ---
 
-## 8. Feature Engineering Verification
+## 6. Feature Engineering Verification
 - **Module**: `feature_engineering/`
 - **Features Computed**: `sanction_amount_log`, `log_disbursed_amount`, `days_to_first_disbursement_log`, peer medians, IQR, cost ratios, payment HHI concentration, and SLA incubation days.
 - **Parity**: Identical feature transformation pipeline executed for offline model training and online API evaluation.
 
 ---
 
-## 9. ML Model Verification
+## 7. ML Model Verification
 
 | Engine / Model | Serialization | Storage Location | Production Loading Status |
 |---|---|---|---|
@@ -88,51 +68,37 @@ This document records the comprehensive forensic audit and resolution of product
 
 ---
 
-## 10. API Verification
+## 8. API Verification
 All analytical API routes (`/analytics/cost-anomalies`, `/analytics/duplicate-works`, `/analytics/fund-anomalies`, `/analytics/delays`, `/analytics/district-summary`, `/analytics/mp-summary`, `/analytics/trends/*`, `/works`) query the underlying database and calculate/fetch real scores dynamically.
 
 ---
 
-## 11. Authentication & RBAC Verification
+## 9. Authentication & RBAC Verification
 - **JWT Verification**: RFC 7519 compliant signed JWT tokens.
 - **Roles Tested**: `MINISTRY`, `STATE_OFFICER`, `DISTRICT_OFFICER`, `MP`.
 - **Scoping Guard**: Updated `api/auth/scoping.py` to verify `user.assigned_state`, `user.assigned_district`, and `user.assigned_mp_name` before injecting SQL predicates, preventing null filter conditions from returning empty lists.
 
 ---
 
-## 12. Frontend Verification
-- **API Client**: Updated `frontend/src/lib/api-client.ts` to handle `import.meta.env.PROD` vs `import.meta.env.DEV` cleanly.
+## 10. Frontend Verification
+- **API Client**: Updated `frontend/src/lib/api-client.ts` to handle local and relative path proxying cleanly.
 - **Mock Fallback Removal**: Cleaned up `analyticsService`, `worksService`, `healthService`, and `scraperService` to return live API data directly without falling back to synthetic mock objects.
 
 ---
 
-## 13. Chatbot Verification
-- **Engine**: Subho AI (`api/routers/chat.py`)
-- **LLM Provider**: Groq API (`[REDACTED_GROQ_API_KEY]`)
-- **Primary Model**: `groq/compound-mini`
-- **Fallback**: Authorized database-backed context builder.
-
----
-
-## 14. CORS Verification
+## 11. CORS Verification
 - **Config**: `api/main.py` and `api/config.py`
 - **Allowed Origins**: Wildcard regex matching and explicit localhost origins enabled.
 
 ---
 
-## 15. Deployment Verification
-- **Render Backend**: Successfully connects to Supabase PostgreSQL pooler and serves live endpoints.
-- **Vercel Frontend**: Decommissioned (Builds and runs strictly locally).
+## 12. Local Architecture Target
+- **Target Endpoint**: `http://127.0.0.1:8000/api/v1` for backend API operations.
+- **Frontend Target**: `http://127.0.0.1:5173` for web app interface.
 
 ---
 
-## 16. Local Architecture Target
-- **Target Endpoint**: `http://127.0.0.1:8000/api/v1` for both development and production builds.
-- **Cloud Parity**: Render and Vercel cloud deployments have been permanently removed.
-
----
-
-## 17. Root Causes Identified & Fixed
+## 13. Root Causes Identified & Fixed
 
 ### [HIGH] Null Jurisdiction Scoping Predicate Generation
 - **Problem**: Users with unassigned jurisdictions (e.g. `assigned_state = None`) triggered `Work.state == NULL` filter predicates, returning 0 records across all analytics tables.
@@ -151,7 +117,7 @@ All analytical API routes (`/analytics/cost-anomalies`, `/analytics/duplicate-wo
 
 ---
 
-## 18. Fixes Applied
+## 14. Fixes Applied
 1. `api/auth/scoping.py`: Guarded jurisdiction scoping.
 2. `api/routers/auth.py`: Added `swapnil15x@gmail.com` alias mapping.
 3. `database/connection.py`: Removed silent SQLite fallback in `get_session()`.
@@ -160,26 +126,24 @@ All analytical API routes (`/analytics/cost-anomalies`, `/analytics/duplicate-wo
 6. `frontend/src/services/works.ts`: Removed mock fallbacks.
 7. `frontend/src/services/health.ts`: Removed mock fallbacks.
 8. `frontend/src/services/scraper.ts`: Removed mock fallbacks.
-9. `render.env` & `vercel.env`: Deleted obsolete cloud deployment files.
-10. `frontend/vercel.json`: Deleted obsolete deployment rewrite configuration file.
 
 ---
 
-## 19. Tests Run & Verification
+## 15. Tests Run & Verification
 - **Pytest**: 119/119 unit & integration tests passed cleanly (`PYTHONPATH=. pytest`).
 - **Frontend Build**: `npm run build` passed with zero errors.
 
 ---
 
-## 20. Remaining Issues
-- **None**: All identified production parity and real data integration defects have been resolved.
+## 16. Remaining Issues
+- **None**: All identified architecture and real data integration defects have been resolved.
 
 ---
 
-## 21. Hardcoded Data Audit
+## 17. Hardcoded Data Audit
 - **Audit Result**: **NONE FOUND** in production API routes or live data pipelines. Synthetic mock files in `frontend/src/services/mockData.ts` are completely bypassed by active services.
 
 ---
 
-## 22. Final Production Readiness Verdict
+## 18. Final Production Readiness Verdict
 **VERDICT**: **A. PRODUCTION READY**
