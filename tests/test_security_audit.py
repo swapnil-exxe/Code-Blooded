@@ -107,16 +107,26 @@ def test_role_escalation_prevented():
 
 
 def test_admin_endpoint_rbac_protection():
-    """Verify /admin/scraper/run endpoint requires MINISTRY role."""
+    """Verify admin user provisioning endpoint requires MINISTRY role."""
     # 1. Unauthenticated -> 401
-    res_unauth = client.post("/api/v1/admin/scraper/run")
+    res_unauth = client.post("/api/v1/auth/users", json={
+        "email": "unauth.user@mplads.gov.in",
+        "password": "Password123!",
+        "full_name": "Unauth User",
+        "role": "MP"
+    })
     assert res_unauth.status_code == 401
 
     # 2. Non-admin (MP) -> 403
     mp_user = get_session().query(User).filter(User.role == "MP").first()
     if mp_user:
         mp_token = create_access_token(data={"sub": str(mp_user.id), "email": mp_user.email, "role": "MP"})
-        res_forbidden = client.post("/api/v1/admin/scraper/run", headers={"Authorization": f"Bearer {mp_token}"})
+        res_forbidden = client.post("/api/v1/auth/users", json={
+            "email": "forbidden.user@mplads.gov.in",
+            "password": "Password123!",
+            "full_name": "Forbidden User",
+            "role": "MP"
+        }, headers={"Authorization": f"Bearer {mp_token}"})
         assert res_forbidden.status_code == 403
 
 
