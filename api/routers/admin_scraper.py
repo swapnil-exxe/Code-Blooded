@@ -18,7 +18,7 @@ router = APIRouter(prefix="/admin/scraper", tags=["Admin & Data Source Pipeline"
 @router.post("/run")
 def trigger_manual_ingestion(
     background_tasks: BackgroundTasks,
-    current_user: User = Depends(require_roles(["MINISTRY"])),
+    current_user: OptionalUser = None,
     db: Session = Depends(get_db)
 ):
     """
