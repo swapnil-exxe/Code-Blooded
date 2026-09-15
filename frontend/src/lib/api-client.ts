@@ -1,8 +1,11 @@
 import axios from 'axios';
 
 export function getApiBaseUrl(): string {
-  let envUrl = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1').trim();
-
+  let envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl || !envUrl.trim()) {
+    return '/api/v1';
+  }
+  envUrl = envUrl.trim();
   if (envUrl.endsWith('/')) {
     envUrl = envUrl.slice(0, -1);
   }
