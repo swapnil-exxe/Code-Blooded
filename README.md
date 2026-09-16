@@ -4,6 +4,7 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 
 ## Implemented Data Structures
 
+* `algorithms/disjoint_set.py`: Disjoint Set Union (DSU / Union-Find) with path compression and rank optimization.
 * `algorithms/heap.py`: Binary Max-Heap & Priority Queue supporting $O(\log N)$ insertion, extraction, and $O(N)$ heapify.
 * `algorithms/red_black_tree.py`: Self-balancing Red-Black Binary Search Tree enforcing black-height balance invariants.
 * `algorithms/trie.py`: Prefix Tree (Trie) for $O(L)$ string retrieval and autocomplete.
