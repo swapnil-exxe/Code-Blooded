@@ -11,6 +11,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/avl_tree.py`: Self-balancing AVL Binary Search Tree with rotation logic.
 * `algorithms/lru_cache.py`: $O(1)$ Doubly-linked list + Hash Map LRU Cache implementation.
 * `algorithms/segment_tree.py`: $O(\log N)$ Range Minimum & Range Sum Query Segment Tree.
+* `algorithms/fenwick_tree.py`: Binary Indexed Tree (Fenwick Tree) supporting $O(\log N)$ point updates and prefix sum queries.
+* `algorithms/string_matching.py`: Knuth-Morris-Pratt (KMP) string search algorithm with $O(N + M)$ pattern matching.
+* `algorithms/graph_algorithms.py`: Dijkstra's Shortest Path algorithm using $O((V + E) \log V)$ binary min-heap priority queue.
 
 ## Running Tests
 
