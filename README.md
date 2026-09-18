@@ -14,6 +14,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/fenwick_tree.py`: Binary Indexed Tree (Fenwick Tree) supporting $O(\log N)$ point updates and prefix sum queries.
 * `algorithms/string_matching.py`: Knuth-Morris-Pratt (KMP) string search algorithm with $O(N + M)$ pattern matching.
 * `algorithms/graph_algorithms.py`: Dijkstra's Shortest Path algorithm using $O((V + E) \log V)$ binary min-heap priority queue.
+* `algorithms/topological_sort.py`: Topological Sort using Kahn's in-degree BFS and DFS state-based traversal.
+* `algorithms/bellman_ford.py`: Bellman-Ford single-source shortest path algorithm with negative edge weight handling.
+* `algorithms/mst.py`: Kruskal's (DSU) and Prim's (min-heap) Minimum Spanning Tree (MST) algorithms.
 
 ## Running Tests
 
