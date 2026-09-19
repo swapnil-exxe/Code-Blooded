@@ -17,6 +17,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/topological_sort.py`: Topological Sort using Kahn's in-degree BFS and DFS state-based traversal.
 * `algorithms/bellman_ford.py`: Bellman-Ford single-source shortest path algorithm with negative edge weight handling.
 * `algorithms/mst.py`: Kruskal's (DSU) and Prim's (min-heap) Minimum Spanning Tree (MST) algorithms.
+* `algorithms/floyd_warshall.py`: Floyd-Warshall all-pairs shortest path algorithm with path reconstruction.
+* `algorithms/tarjan_scc.py`: Tarjan's strongly connected components (SCC) algorithm using DFS discovery times.
+* `algorithms/max_flow.py`: Edmonds-Karp maximum flow network algorithm using BFS augmenting paths.
 
 ## Running Tests
 
