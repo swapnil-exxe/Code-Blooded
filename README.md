@@ -20,6 +20,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/floyd_warshall.py`: Floyd-Warshall all-pairs shortest path algorithm with path reconstruction.
 * `algorithms/tarjan_scc.py`: Tarjan's strongly connected components (SCC) algorithm using DFS discovery times.
 * `algorithms/max_flow.py`: Edmonds-Karp maximum flow network algorithm using BFS augmenting paths.
+* `algorithms/astar.py`: A* search algorithm with heuristic-guided shortest path planning.
+* `algorithms/z_algorithm.py`: Z-algorithm for linear-time $O(N + M)$ string pattern matching.
+* `algorithms/lca_binary_lifting.py`: Lowest Common Ancestor (LCA) queries in $O(\log N)$ using binary lifting on trees.
 
 ## Running Tests
 
