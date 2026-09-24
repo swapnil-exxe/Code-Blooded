@@ -39,22 +39,12 @@ def _sanitize_db_url(raw_url: str) -> str:
         return raw_url
 
 def get_db_url() -> str:
-    """Retrieves Database URL from environment or constructs from parts, falling back to live Supabase PostgreSQL."""
+    """Retrieves Database URL from environment, falling back to local SQLite database if requested or configured."""
+    use_sqlite = os.getenv("USE_SQLITE", "").lower() in ("true", "1", "yes")
     sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
-    sqlite_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def _ensure_sqlite_ready(path: Path):
-        if not path.exists() or path.stat().st_size < 1000000:
-            import threading
-            print("[DATABASE] SQLite database missing or empty. Starting background auto-population...")
-            def _bg_populate():
-                try:
-                    from database.populate_sqlite import populate_database
-                    populate_database()
-                except Exception as e:
-                    print(f"[DATABASE WARN] Auto-population of SQLite database failed: {e}")
-            t = threading.Thread(target=_bg_populate, daemon=True)
-            t.start()
+    if use_sqlite and sqlite_path.exists():
+        return f"sqlite:///{sqlite_path}"
 
     # 1. Check direct URL or DATABASE_URL from environment (Supabase PostgreSQL)
     direct = os.getenv("DIRECT_URL")
@@ -75,10 +65,13 @@ def get_db_url() -> str:
         raw_pg = f"postgresql://{user}:{password}@{host}:{port}/{db}"
         return _sanitize_db_url(raw_pg)
 
+    if sqlite_path.exists():
+        return f"sqlite:///{sqlite_path}"
+
     raise ValueError("DATABASE_URL environment variable is not configured. Please set DATABASE_URL in your .env file.")
 
 def get_engine(db_url: str = None, pool_size: int = 10, max_overflow: int = 20):
-    """Creates a thread-safe SQLAlchemy engine with connection pooling."""
+    """Creates a thread-safe SQLAlchemy engine with connection pooling and fallback."""
     if db_url is None:
         db_url = get_db_url()
     
@@ -89,20 +82,34 @@ def get_engine(db_url: str = None, pool_size: int = 10, max_overflow: int = 20):
         )
 
     connect_args = {
-        "connect_timeout": 15,
+        "connect_timeout": 5,
         "keepalives": 1,
         "keepalives_idle": 30,
         "keepalives_interval": 10,
         "keepalives_count": 5,
     }
     
-    return create_engine(
-        db_url,
-        pool_size=pool_size,
-        max_overflow=max_overflow,
-        pool_pre_ping=True,
-        connect_args=connect_args,
-    )
+    try:
+        engine = create_engine(
+            db_url,
+            pool_size=pool_size,
+            max_overflow=max_overflow,
+            pool_pre_ping=True,
+            connect_args=connect_args,
+        )
+        with engine.connect() as conn:
+            from sqlalchemy import text
+            conn.execute(text("SELECT 1;"))
+        return engine
+    except Exception as e:
+        sqlite_path = Path(__file__).resolve().parent.parent / "database" / "mplads_master.db"
+        if sqlite_path.exists():
+            print(f"[DATABASE NOTICE] PostgreSQL connection failed ({e}). Falling back to local SQLite engine (190,942 works)...")
+            return create_engine(
+                f"sqlite:///{sqlite_path}",
+                connect_args={"check_same_thread": False},
+            )
+        raise e
 
 _engine = None
 _SessionLocal = None
