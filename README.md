@@ -23,6 +23,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/astar.py`: A* search algorithm with heuristic-guided shortest path planning.
 * `algorithms/z_algorithm.py`: Z-algorithm for linear-time $O(N + M)$ string pattern matching.
 * `algorithms/lca_binary_lifting.py`: Lowest Common Ancestor (LCA) queries in $O(\log N)$ using binary lifting on trees.
+* `algorithms/rabin_karp.py`: Rabin-Karp string matching algorithm with rolling hash evaluation.
+* `algorithms/treap.py`: Treap randomized binary search tree data structure.
+* `algorithms/heavy_light_decomposition.py`: Heavy-Light Decomposition (HLD) for tree path range queries.
 
 ## Running Tests
 
