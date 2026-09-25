@@ -1,7 +1,9 @@
 import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class ScraperSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     TARGET_URL: str = os.getenv("SCRAPER_TARGET_URL", "https://mplads.mospi.gov.in/digigov/dashboard.html")
     BASE_DOMAIN: str = os.getenv("SCRAPER_BASE_DOMAIN", "https://mplads.mospi.gov.in")
     SCRAPER_INTERVAL_HOURS: int = int(os.getenv("SCRAPER_INTERVAL_HOURS", "6"))
@@ -14,9 +16,5 @@ class ScraperSettings(BaseSettings):
         "SCRAPER_USER_AGENT",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
     )
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
 scraper_settings = ScraperSettings()
