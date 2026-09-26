@@ -26,6 +26,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/rabin_karp.py`: Rabin-Karp string matching algorithm with rolling hash evaluation.
 * `algorithms/treap.py`: Treap randomized binary search tree data structure.
 * `algorithms/heavy_light_decomposition.py`: Heavy-Light Decomposition (HLD) for tree path range queries.
+* `algorithms/suffix_array.py`: Suffix Array construction and Kasai's $O(N)$ LCP array algorithm.
+* `algorithms/kosaraju_scc.py`: Kosaraju's two-pass DFS algorithm for strongly connected components.
+* `algorithms/dinic_max_flow.py`: Dinic's maximum flow algorithm using level graphs and blocking flow.
 
 ## Running Tests
 
