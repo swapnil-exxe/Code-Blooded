@@ -29,6 +29,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/suffix_array.py`: Suffix Array construction and Kasai's $O(N)$ LCP array algorithm.
 * `algorithms/kosaraju_scc.py`: Kosaraju's two-pass DFS algorithm for strongly connected components.
 * `algorithms/dinic_max_flow.py`: Dinic's maximum flow algorithm using level graphs and blocking flow.
+* `algorithms/hopcroft_karp.py`: Hopcroft-Karp algorithm for maximum bipartite matching in $O(E \sqrt{V})$.
+* `algorithms/aho_corasick.py`: Aho-Corasick automaton for multi-pattern dictionary string searching.
+* `algorithms/suffix_tree.py`: Suffix Tree constructed via Suffix Array & LCP array for $O(M)$ substring searching.
 
 ## Running Tests
 
