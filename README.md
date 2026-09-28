@@ -32,6 +32,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/hopcroft_karp.py`: Hopcroft-Karp algorithm for maximum bipartite matching in $O(E \sqrt{V})$.
 * `algorithms/aho_corasick.py`: Aho-Corasick automaton for multi-pattern dictionary string searching.
 * `algorithms/suffix_tree.py`: Suffix Tree constructed via Suffix Array & LCP array for $O(M)$ substring searching.
+* `algorithms/euler_tour.py`: Euler Tour Technique for tree flattening and subtree range queries.
+* `algorithms/manacher.py`: Manacher's algorithm for linear-time $O(N)$ longest palindromic substring discovery.
+* `algorithms/min_cost_max_flow.py`: Minimum Cost Maximum Flow (MCMF) using SPFA shortest path augmenting paths.
 
 ## Running Tests
 
