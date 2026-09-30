@@ -35,6 +35,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/euler_tour.py`: Euler Tour Technique for tree flattening and subtree range queries.
 * `algorithms/manacher.py`: Manacher's algorithm for linear-time $O(N)$ longest palindromic substring discovery.
 * `algorithms/min_cost_max_flow.py`: Minimum Cost Maximum Flow (MCMF) using SPFA shortest path augmenting paths.
+* `algorithms/fenwick_tree_2d.py`: 2D Binary Indexed Tree (Fenwick Tree 2D) for $O(\log N \cdot \log M)$ subgrid range sum queries.
+* `algorithms/boyer_moore.py`: Boyer-Moore string search algorithm using Bad Character Heuristic.
+* `algorithms/johnson_algorithm.py`: Johnson's all-pairs shortest paths algorithm using Bellman-Ford potential reweighting & Dijkstra.
 
 ## Running Tests
 
