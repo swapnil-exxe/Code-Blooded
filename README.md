@@ -38,6 +38,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/fenwick_tree_2d.py`: 2D Binary Indexed Tree (Fenwick Tree 2D) for $O(\log N \cdot \log M)$ subgrid range sum queries.
 * `algorithms/boyer_moore.py`: Boyer-Moore string search algorithm using Bad Character Heuristic.
 * `algorithms/johnson_algorithm.py`: Johnson's all-pairs shortest paths algorithm using Bellman-Ford potential reweighting & Dijkstra.
+* `algorithms/b_tree.py`: B-Tree self-balancing disk-optimized search tree data structure.
+* `algorithms/skip_list.py`: Skip List probabilistic search structure providing $O(\log N)$ expected performance.
+* `algorithms/dynamic_segment_tree.py`: Dynamic Segment Tree for sparse range queries over large coordinate spaces.
 
 ## Running Tests
 
