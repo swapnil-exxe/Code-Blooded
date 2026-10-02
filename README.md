@@ -41,6 +41,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/b_tree.py`: B-Tree self-balancing disk-optimized search tree data structure.
 * `algorithms/skip_list.py`: Skip List probabilistic search structure providing $O(\log N)$ expected performance.
 * `algorithms/dynamic_segment_tree.py`: Dynamic Segment Tree for sparse range queries over large coordinate spaces.
+* `algorithms/splay_tree.py`: Splay Tree self-adjusting binary search tree data structure.
+* `algorithms/wavelet_matrix.py`: Wavelet Matrix for succinct range quantile and range rank queries.
+* `algorithms/persistent_segment_tree.py`: Persistent Segment Tree supporting historical version queries.
 
 ## Running Tests
 
