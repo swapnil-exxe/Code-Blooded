@@ -44,6 +44,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/splay_tree.py`: Splay Tree self-adjusting binary search tree data structure.
 * `algorithms/wavelet_matrix.py`: Wavelet Matrix for succinct range quantile and range rank queries.
 * `algorithms/persistent_segment_tree.py`: Persistent Segment Tree supporting historical version queries.
+* `algorithms/scapegoat_tree.py`: Scapegoat Tree self-balancing binary search tree.
+* `algorithms/sparse_table.py`: Sparse Table for $O(1)$ idempotent range minimum and maximum queries.
+* `algorithms/hungarian_algorithm.py`: Hungarian Algorithm (Kuhn-Munkres) for optimal weighted bipartite matching.
 
 ## Running Tests
 
