@@ -47,6 +47,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/scapegoat_tree.py`: Scapegoat Tree self-balancing binary search tree.
 * `algorithms/sparse_table.py`: Sparse Table for $O(1)$ idempotent range minimum and maximum queries.
 * `algorithms/hungarian_algorithm.py`: Hungarian Algorithm (Kuhn-Munkres) for optimal weighted bipartite matching.
+* `algorithms/fenwick_tree_range.py`: Range-Update Range-Query Binary Indexed Tree (Fenwick Tree).
+* `algorithms/convex_hull.py`: 2D Convex Hull algorithm using Monotone Chain and Graham Scan.
+* `algorithms/cartesian_tree.py`: Cartesian Tree constructed in linear $O(N)$ time via monotonic stack.
 
 ## Running Tests
 
