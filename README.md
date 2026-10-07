@@ -50,6 +50,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/fenwick_tree_range.py`: Range-Update Range-Query Binary Indexed Tree (Fenwick Tree).
 * `algorithms/convex_hull.py`: 2D Convex Hull algorithm using Monotone Chain and Graham Scan.
 * `algorithms/cartesian_tree.py`: Cartesian Tree constructed in linear $O(N)$ time via monotonic stack.
+* `algorithms/bridges_articulation_points.py`: Tarjan's Bridge and Articulation Point (cut vertex) discovery algorithm in $O(V + E)$ time.
+* `algorithms/kd_tree.py`: k-d Tree for multidimensional spatial indexing, nearest-neighbor queries, and orthogonal range bounding box searches.
+* `algorithms/sqrt_decomposition.py`: Square Root Decomposition for $O(\sqrt{N})$ range updates/queries and Mo's algorithm for offline distinct element counting.
 
 ## Running Tests
 
