@@ -53,6 +53,10 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/bridges_articulation_points.py`: Tarjan's Bridge and Articulation Point (cut vertex) discovery algorithm in $O(V + E)$ time.
 * `algorithms/kd_tree.py`: k-d Tree for multidimensional spatial indexing, nearest-neighbor queries, and orthogonal range bounding box searches.
 * `algorithms/sqrt_decomposition.py`: Square Root Decomposition for $O(\sqrt{N})$ range updates/queries and Mo's algorithm for offline distinct element counting.
+* `algorithms/ternary_search_tree.py`: Ternary Search Tree (TST) for efficient space-saving prefix and wildcard string searches.
+* `algorithms/push_relabel.py`: Goldberg-Tarjan Push-Relabel Maximum Flow algorithm with FIFO vertex discharge in $O(V^3)$.
+* `algorithms/dial_shortest_path.py`: 0-1 BFS in $O(V + E)$ and Dial's Algorithm (Bucket Queue Dijkstra) for bounded edge weights in $O(V \cdot W + E)$.
+* `algorithms/convex_hull_trick.py`: Dynamic Convex Hull Trick (Line Container) maintaining optimal envelopes for $O(\log N)$ line evaluations.
 
 ## Running Tests
 
