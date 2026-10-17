@@ -57,6 +57,11 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/push_relabel.py`: Goldberg-Tarjan Push-Relabel Maximum Flow algorithm with FIFO vertex discharge in $O(V^3)$.
 * `algorithms/dial_shortest_path.py`: 0-1 BFS in $O(V + E)$ and Dial's Algorithm (Bucket Queue Dijkstra) for bounded edge weights in $O(V \cdot W + E)$.
 * `algorithms/convex_hull_trick.py`: Dynamic Convex Hull Trick (Line Container) maintaining optimal envelopes for $O(\log N)$ line evaluations.
+* `algorithms/implicit_treap.py`: Implicit Treap (Cartesian Tree on indices) supporting dynamic array operations, range sum, and range reversal with lazy propagation.
+* `algorithms/hierholzer.py`: Hierholzer's algorithm for finding Eulerian paths and circuits in directed and undirected graphs in $O(V + E)$ time.
+* `algorithms/bloom_filter.py`: Space-efficient probabilistic Bloom Filter utilizing double-hashing (Kirsch-Mitzenmacher) and dynamic cardinality estimation.
+* `algorithms/two_sat.py`: Linear-time 2-SAT solver using Tarjan's Strongly Connected Components on implication graphs in $O(V + E)$ time.
+* `algorithms/karger_min_cut.py`: Karger's randomized edge contraction algorithm for global minimum cut in undirected multigraphs.
 
 ## Running Tests
 
