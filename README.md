@@ -62,6 +62,10 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/bloom_filter.py`: Space-efficient probabilistic Bloom Filter utilizing double-hashing (Kirsch-Mitzenmacher) and dynamic cardinality estimation.
 * `algorithms/two_sat.py`: Linear-time 2-SAT solver using Tarjan's Strongly Connected Components on implication graphs in $O(V + E)$ time.
 * `algorithms/karger_min_cut.py`: Karger's randomized edge contraction algorithm for global minimum cut in undirected multigraphs.
+* `algorithms/li_chao_tree.py`: Dynamic Li Chao Segment Tree for optimal line and line-segment evaluation in $O(\log C)$ time.
+* `algorithms/fenwick_tree_3d.py`: 3D Binary Indexed Tree (Fenwick Tree 3D) for point updates and subvolume range sum queries via Inclusion-Exclusion.
+* `algorithms/stoer_wagner.py`: Deterministic Stoer-Wagner global minimum cut algorithm for undirected weighted graphs in $O(V^3)$.
+* `algorithms/ternary_search.py`: Discrete Ternary Search and continuous Golden-Section Search for unimodal function optimization.
 
 ## Running Tests
 
