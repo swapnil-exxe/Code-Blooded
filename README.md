@@ -66,6 +66,9 @@ Production-grade Data Structures and Algorithmic Problem Solving in Python.
 * `algorithms/fenwick_tree_3d.py`: 3D Binary Indexed Tree (Fenwick Tree 3D) for point updates and subvolume range sum queries via Inclusion-Exclusion.
 * `algorithms/stoer_wagner.py`: Deterministic Stoer-Wagner global minimum cut algorithm for undirected weighted graphs in $O(V^3)$.
 * `algorithms/ternary_search.py`: Discrete Ternary Search and continuous Golden-Section Search for unimodal function optimization.
+* `algorithms/link_cut_tree.py`: Link-Cut Tree (Sleator & Tarjan) dynamic trees for forest connectivity and path queries in $O(\log N)$ time.
+* `algorithms/count_min_sketch.py`: Count-Min Sketch sublinear-space frequency estimation and inner product estimation for data streams.
+* `algorithms/suffix_automaton.py`: Suffix Automaton (DAWG) for $O(N)$ string indexing, substring queries, and longest common substring search.
 
 ## Running Tests
 
